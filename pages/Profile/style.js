@@ -18,7 +18,7 @@ const scrollContainer = StyleSheet.create({
         //backgroundColor: 'COLORS.BLUE',
         alignItems: 'center',
         padding: SIZES.PADDING,
-        height: SIZES.HEIGHT * .90,
+        //height: SIZES.HEIGHT * 2.90,
         marginTop: -SIZES.HEIGHT * .03,
         borderTopLeftRadius: SIZES.RADIUS * 2,
         borderTopRightRadius: SIZES.RADIUS * 2,
@@ -73,20 +73,51 @@ const infoSec = StyleSheet.create({
 const cardsContainer = StyleSheet.create({
     main: {
         width: '100%',
-        height: 210,
+        //height: 220,
         marginBottom: SIZES.MARGIN,
         padding: SIZES.PADDING,
         borderRadius: SIZES.RADIUS
     },
     title: {
-        color: COLORS.WHITE
+        color: COLORS.WHITE,
+        marginBottom: SIZES.MARGIN * 2
     },
     itemContainer: {
         //backgroundColor: 'black',
         display: 'flex',
-        flexDirection: 'row',
+        flexDirection: 'column',
         justifyContent: 'flex-start',
-        gap: 5
+        gap: 7
+    },
+    txt: {
+        color: COLORS.WHITE,
+        fontSize: SIZES.H3
+    },
+    input: {
+        //backgroundColor: 'red',
+        width: '100%',
+        borderBottomWidth: 1,
+        //borderWidth: 1,
+        //borderRadius: SIZES.RADIUS / 3,
+        borderColor: "#c6c6c6",
+        padding: 7,
+        //paddingLeft: 0,
+        //paddingTop: 0,
+        color: "#c6c6c6",
+        marginBottom: 20
+    },
+    inputEdit: {
+        //backgroundColor: 'red',
+        width: '100%',
+        //borderBottomWidth: 1,
+        borderWidth: 1,
+        borderRadius: SIZES.RADIUS / 3,
+        borderColor: COLORS.LIGHT_GRAY,
+        padding: 7,
+        //paddingLeft: 0,
+        //paddingTop: 0,
+        color: COLORS.WHITE,
+        marginBottom: 20
     }
 })
 
@@ -99,7 +130,8 @@ const logoubtn = StyleSheet.create({
         width: '100%',
         justifyContent: 'center',
         alignItems: "center",
-        borderRadius: SIZES.RADIUS
+        borderRadius: SIZES.RADIUS,
+        marginBottom: 60,
     },
     txt: {
         fontSize: SIZES.H3,
@@ -119,6 +151,10 @@ const iconTopContainer = StyleSheet.create({
         justifyContent: 'space-between'
     },
     btn: {
+        display: 'flex',
+        flexDirection: "row",
+        alignItems: 'center',
+        gap: 5,
         backgroundColor: COLORS.DARK_BLUE,
         padding: SIZES.PADDING / 2.5,
         borderRadius: SIZES.RADIUS_CIRCLE,

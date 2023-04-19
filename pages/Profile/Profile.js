@@ -11,7 +11,8 @@ import {
     Text,
     Image,
     TouchableOpacity,
-    ScrollView
+    ScrollView,
+    TextInput
 } from 'react-native';
 import { useEffect, useRef, useState } from 'react';
 import LinearGradient from 'react-native-linear-gradient';
@@ -37,7 +38,30 @@ const Profile = ({ navigation, route }) => {
     // --- CONST'S
     //------------------------------------------------
     const [loading, setLoading] = useState(false);
+    const [editMode, setEditMode] = useState(false);
     const [info, setInfo] = useState([]);
+    const [infoJson, setInfoJson] = useState({
+        name: {
+            attr: 'name',
+            value: ''
+        },
+        mail: {
+            attr: 'mail',
+            value: ''
+        },
+        phone: {
+            attr: 'phone',
+            value: ''
+        },
+        cpf: {
+            attr: 'cpf',
+            value: ''
+        },
+        gender: {
+            attr: 'gender',
+            value: ''
+        },
+    })
 
     //------------------------------------------------
     // --- ASYNC STORAGE
@@ -48,15 +72,102 @@ const Profile = ({ navigation, route }) => {
             const value = await AsyncStorage.getItem('@vetapp:user')
             if (value !== null) {
                 let _json = JSON.parse(value); //console.log(_json[0].name);
-                _json[0].clinic_address = _json[0].clinic_address.slice(0,20).concat('...');
-                console.log(_json[0].clinic_address)
+                _json[0].clinic_address = _json[0].clinic_address.slice(0, 20).concat('...');
+                //console.log(_json[0].clinic_address)
                 setInfo(_json[0]);
+                setInfoJson({
+                    name: {
+                        attr: 'name',
+                        value: _json[0]?.name
+                    },
+                    mail: {
+                        attr: 'mail',
+                        value: _json[0]?.mail
+                    },
+                    phone: {
+                        attr: 'phone',
+                        value: _json[0]?.phone
+                    },
+                    cpf: {
+                        attr: 'cpf',
+                        value: _json[0]?.cpf
+                    },
+                    gender: {
+                        attr: 'gender',
+                        value: _json[0]?.gender
+                    },
+
+                })
+
+                setEditInfo({
+                    name: {
+                        attr: 'name',
+                        value: _json[0]?.name
+                    },
+                    mail: {
+                        attr: 'mail',
+                        value: _json[0]?.mail
+                    },
+                    phone: {
+                        attr: 'phone',
+                        value: _json[0]?.phone
+                    },
+                    cpf: {
+                        attr: 'cpf',
+                        value: _json[0]?.cpf
+                    },
+                    gender: {
+                        attr: 'gender',
+                        value: _json[0]?.gender
+                    },
+
+                })
+
             }
         } catch (e) {
             console.log("erro -->" + e);
             alert(e);
         }
 
+    }
+
+    //------------------------------------------------
+    // --- EDIT PROFILE
+    //------------------------------------------------
+    const [editInfo, setEditInfo] = useState({
+        name: {
+            attr: 'name',
+            value: ''
+        },
+        mail: {
+            attr: 'mail',
+            value: ''
+        },
+        phone: {
+            attr: 'phone',
+            value: ''
+        },
+        cpf: {
+            attr: 'cpf',
+            value: ''
+        },
+        gender: {
+            attr: 'gender',
+            value: ''
+        },
+    })
+
+    const onHandleChange = (key, val) => {
+
+        if (key === editInfo[key].attr) {
+            setEditInfo({
+                ...editInfo,
+                [key]: {
+                    ...editInfo[key],
+                    value: val
+                }
+            })
+        }
 
     }
 
@@ -92,8 +203,8 @@ const Profile = ({ navigation, route }) => {
 
                 {/* USER INFO --- SECTION */}
                 <View style={infoSec.user}>
-                    <Text style={infoSec.name}>{info?.name ?? ""}</Text>
-                    <Text style={infoSec.email}>{info?.mail?? ""}</Text>
+                    <Text style={infoSec.name}>{infoJson.name.value ?? ""}</Text>
+                    <Text style={infoSec.email}>{infoJson.mail.value ?? ""}</Text>
                     {/* <Text style={infoSec.txt}>Belo Horizonte, MG</Text> */}
                 </View>
 
@@ -120,30 +231,56 @@ const Profile = ({ navigation, route }) => {
                     <Text style={[GENERAL_STYLE.title, cardsContainer.title]}>Minhas informações</Text>
 
                     {/* ITENS CARD */}
-                    <View style={{ gap: 4 }}>
+                    <View style={{ gap: 10 }}>
                         <View style={cardsContainer.itemContainer}>
-                            <Text>Nome:</Text>
-                            <Text>{info?.name ?? ""}</Text>
+                            <Text style={cardsContainer.txt}>Nome</Text>
+                            <TextInput
+                                style={editMode ? cardsContainer.inputEdit : cardsContainer.input}
+                                value={editMode ? editInfo.name.value : infoJson.name.value}
+                                editable={editMode ? true : false}
+                                onChangeText={value => onHandleChange('name', value)}
+                                
+                            />
                         </View>
 
                         <View style={cardsContainer.itemContainer}>
-                            <Text>Email:</Text>
-                            <Text>{info?.mail ?? ""}</Text>
+                            <Text style={cardsContainer.txt} >Email:</Text>
+                            <TextInput
+                                style={editMode ? cardsContainer.inputEdit : cardsContainer.input}
+                                value={editMode ? editInfo.mail.value : infoJson.mail.value}
+                                editable={editMode ? true : false}
+                                onChangeText={value => onHandleChange('mail', value)}
+                            />
                         </View>
 
                         <View style={cardsContainer.itemContainer}>
-                            <Text>Telefone:</Text>
-                            <Text>{info?.phone ?? ""}</Text>
+                            <Text style={cardsContainer.txt} >Telefone:</Text>
+                            <TextInput
+                                style={editMode ? cardsContainer.inputEdit : cardsContainer.input}
+                                value={editMode ? editInfo.phone.value : infoJson.phone.value}
+                                editable={editMode ? true : false}
+                                onChangeText={value => onHandleChange('pho', value)}
+                            />
                         </View>
 
                         <View style={cardsContainer.itemContainer}>
-                            <Text>CPF:</Text>
-                            <Text>{info?.cpf ?? ""}</Text>
+                            <Text style={cardsContainer.txt} >CPF:</Text>
+                            <TextInput
+                                style={editMode ? cardsContainer.inputEdit : cardsContainer.input}
+                                value={editMode ? editInfo.cpf.value : infoJson.cpf.value}
+                                editable={editMode ? true : false}
+                                onChangeText={value => onHandleChange('v', value)}
+                            />
                         </View>
 
                         <View style={cardsContainer.itemContainer}>
-                            <Text>Sexo:</Text>
-                            <Text>{info?.gender ?? ""}</Text>
+                            <Text style={cardsContainer.txt} >Sexo:</Text>
+                            <TextInput
+                                style={editMode ? cardsContainer.inputEdit : cardsContainer.input}
+                                value={editMode ? editInfo : infoJson ?? "".gender.value ?? ""}
+                                editable={editMode ? true : false}
+                                onChangeText={value => onHandleChange('va', value)}
+                            />
                         </View>
                     </View>
 
@@ -161,25 +298,41 @@ const Profile = ({ navigation, route }) => {
                     <Text style={[GENERAL_STYLE.title, cardsContainer.title]}>Dados Profissionais</Text>
 
                     {/* ITENS CARD */}
-                    <View style={{ gap: 4 }}>
+                    <View style={{ gap: 10 }}>
                         <View style={cardsContainer.itemContainer}>
-                            <Text>Clínica:</Text>
-                            <Text>{info?.clinic_name ?? ""}</Text>
+                            <Text style={cardsContainer.txt} >Clínica</Text>
+                            <TextInput
+                                style={editMode ? cardsContainer.inputEdit : cardsContainer.input}
+                                value={info?.clinic_name ?? ""}
+                                editable={false}
+                            />
                         </View>
 
                         <View style={cardsContainer.itemContainer}>
-                            <Text>Endereço:</Text>
-                            <Text>{info?.clinic_address ?? ""}</Text>
+                            <Text style={cardsContainer.txt} >Endereço:</Text>
+                            <TextInput
+                                style={editMode ? cardsContainer.inputEdit : cardsContainer.input}
+                                value={info?.clinic_address ?? ""}
+                                editable={false}
+                            />
                         </View>
 
                         <View style={cardsContainer.itemContainer}>
-                            <Text>Telefone:</Text>
-                            <Text>{info?.clinic_phone ?? ""}</Text>
+                            <Text style={cardsContainer.txt} >Telefone:</Text>
+                            <TextInput
+                                style={editMode ? cardsContainer.inputEdit : cardsContainer.input}
+                                value={info?.clinic_phone ?? ""}
+                                editable={false}
+                            />
                         </View>
 
                         <View style={cardsContainer.itemContainer}>
-                            <Text>Funcionamento:</Text>
-                            <Text>{info?.clinic_working_time ?? ""}</Text>
+                            <Text style={cardsContainer.txt} >Funcionamento:</Text>
+                            <TextInput
+                                style={editMode ? cardsContainer.inputEdit : cardsContainer.input}
+                                value={info?.clinic_working_time ?? ""}
+                                editable={false}
+                            />
                         </View>
                     </View>
 
@@ -206,8 +359,9 @@ const Profile = ({ navigation, route }) => {
                 </TouchableOpacity>
 
                 {/* EDIT */}
-                <TouchableOpacity style={iconTopContainer.btn}>
-                    <Icon name={"account-edit"} color={COLORS.WHITE} size={30} />
+                <TouchableOpacity style={iconTopContainer.btn} onPress={() => setEditMode(!editMode)}>
+                    <Icon name={editMode ? "check" : "account-edit"} color={COLORS.WHITE} size={30} />
+                    <Text style={{ color: COLORS.WHITE, fontWeight: "600" }}>{editMode ? "Salvar" : "Editar"}</Text>
                 </TouchableOpacity>
             </View>
         )
