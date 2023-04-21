@@ -23,7 +23,7 @@ const grettingsBoxStyle = StyleSheet.create({
     doctorName: {
         color: COLORS.WHITE,
         fontWeight: "bold",
-        fontSize: SIZES.BODY3
+        fontSize: SIZES.H1 * .6,
     },
     subtitle: {
         color: COLORS.WHITE_SMOKE,
@@ -144,7 +144,7 @@ const chartBox = StyleSheet.create({
         paddingLeft: SIZES.PADDING / 2,
         paddingRight: SIZES.PADDING / 2,
         // padding: SIZES.PADDING / 2,
-        borderRadius: SIZES.RADIUS_CIRCLE,
+        borderRadius: SIZES.RADIUS / 2,
         gap: 10
     },
     btnText: {

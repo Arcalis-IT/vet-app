@@ -55,8 +55,8 @@ const infoSec = StyleSheet.create({
         alignItems: 'center'
     },
     name: {
-        fontSize: SIZES.H2,
-        color: COLORS.BLACK
+        fontSize: SIZES.H1 * .8,
+        color: COLORS.BG_TESTE
     },
     email: {
         color: COLORS.DARK_GRAY,
@@ -79,19 +79,20 @@ const cardsContainer = StyleSheet.create({
         borderRadius: SIZES.RADIUS
     },
     title: {
-        color: COLORS.WHITE,
+        color: COLORS.LIGHT_GRAY,
         marginBottom: SIZES.MARGIN * 2
     },
     itemContainer: {
         //backgroundColor: 'black',
         display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'flex-start',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
         gap: 5
     },
     txt: {
         color: COLORS.WHITE,
-        fontSize: SIZES.H3
+        fontSize: SIZES.H4 ,
     },
     information: {
         color: "#C6C6C6",
@@ -110,6 +111,7 @@ const logoubtn = StyleSheet.create({
         alignItems: "center",
         borderRadius: SIZES.RADIUS,
         marginBottom: 60,
+        marginTop: SIZES.MARGIN
     },
     txt: {
         fontSize: SIZES.H3,
@@ -135,7 +137,7 @@ const iconTopContainer = StyleSheet.create({
         gap: 5,
         backgroundColor: COLORS.TRANSPARENT_BLACK3,
         padding: SIZES.PADDING / 3,
-        borderRadius: SIZES.RADIUS,
+        borderRadius: SIZES.RADIUS / 2,
         borderColor: COLORS.WHITE,
         borderWidth: 1,
     },

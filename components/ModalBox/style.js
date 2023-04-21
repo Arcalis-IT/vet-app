@@ -91,7 +91,7 @@ const buttonSections = StyleSheet.create({
         marginTop: -SIZES.MARGIN,
         justifyContent: 'center',
         alignItems: 'center',
-        borderRadius: SIZES.RADIUS,
+        borderRadius: SIZES.RADIUS / 2,
         height: 35,
         width: '40%',
         backgroundColor: COLORS.WHITE

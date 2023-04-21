@@ -16,7 +16,7 @@ const Tab = createBottomTabNavigator();
 //_______________MAIN_____________________________
 const Tabs = ({navigation, route}) => {
 
-    const { userId } = route.params;
+    //const { userId } = route.params;
 
     return(
         <Tab.Navigator
@@ -29,7 +29,7 @@ const Tabs = ({navigation, route}) => {
             <Tab.Screen
                 name="Home"
                 component={Home}
-                initialParams={{userId: userId}}
+                //initialParams={{userId: userId ?? null}}
                 options={{
                     tabBarIcon: ({focused}) => <TabIcon focused={focused} icon={ focused ? "home" : "home-outline"} />,
                 }}

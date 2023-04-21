@@ -87,45 +87,45 @@ const Profile = ({ navigation, route }) => {
         try {
             const value = await AsyncStorage.getItem('@vetapp:user')
             if (value !== null) {
-                let _json = JSON.parse(value); //console.log(_json[0].name);
-                _json[0].clinic_address = _json[0].clinic_address.slice(0, 20).concat('...');
-                //console.log(_json[0].clinic_address)
+                let _json = JSON.parse(value); 
+                _json.clinic_address = _json.clinic_address.slice(0, 20).concat('...');
+                //console.log(_json.clinic_address)
                 setInfoJson({
                     name: {
                         attr: 'name',
-                        value: _json[0]?.name
+                        value: _json?.name
                     },
                     mail: {
                         attr: 'mail',
-                        value: _json[0]?.mail
+                        value: _json?.mail
                     },
                     phone: {
                         attr: 'phone',
-                        value: _json[0]?.phone
+                        value: _json?.phone
                     },
                     cpf: {
                         attr: 'cpf',
-                        value: _json[0]?.cpf
+                        value: _json?.cpf
                     },
                     gender: {
                         attr: 'gender',
-                        value: _json[0]?.gender
+                        value: _json?.gender
                     },
                     clinic_name: {
                         attr: 'clinic_name',
-                        value: _json[0]?.clinic_name
+                        value: _json?.clinic_name
                     },
                     clinic_address: {
                         attr: 'clinic_address',
-                        value: _json[0]?.clinic_address
+                        value: _json?.clinic_address
                     },
                     clinic_phone: {
                         attr: 'clinic_phone',
-                        value: _json[0]?.clinic_phone
+                        value: _json?.clinic_phone
                     },
                     clinic_working_time: {
                         attr: 'clinic_working_time',
-                        value: _json[0]?.clinic_working_time
+                        value: _json?.clinic_working_time
                     },
                 })
 
@@ -255,9 +255,9 @@ const Profile = ({ navigation, route }) => {
                 colors={[COLORS.WHITE, COLORS.WHITE]} // start={{ x: 0.0, y: 1.0 }} // end={{ x: 1, y: 0.15 }} 
             >
                 {/* TOUPIMAGE */}
-                <View style={imageContainer.main}>
+                <TouchableOpacity style={imageContainer.main}>
                     <Image source={IMAGES._myself} style={imageContainer.image} />
-                </View>
+                </TouchableOpacity>
 
                 {/* USER INFO --- SECTION */}
                 <View style={infoSec.user}>
@@ -289,7 +289,7 @@ const Profile = ({ navigation, route }) => {
                     <Text style={[GENERAL_STYLE.title, cardsContainer.title]}>Minhas informações</Text>
 
                     {/* ITENS CARD */}
-                    <View style={{ gap: 10 }}>
+                    <View style={{ gap: 15 }}>
                         <View style={cardsContainer.itemContainer}>
                             <Text style={cardsContainer.txt}>Nome</Text>
                             <Text style={cardsContainer.information}>{infoJson.name.value}</Text>
@@ -372,13 +372,13 @@ const Profile = ({ navigation, route }) => {
 
                 {/* GO BACK */}
                 <TouchableOpacity style={iconTopContainer.btn} onPress={() => { navigation.goBack() }}>
-                    <Icon name={"arrow-left-thin"} color={COLORS.WHITE} size={30} />
+                    <Icon name={"arrow-left"} color={COLORS.LIGHT_GRAY} size={30} />
                 </TouchableOpacity>
 
                 {/* EDIT */}
                 <TouchableOpacity style={iconTopContainer.btn} onPress={() => {navigation.navigate('EditProfile')}}>
-                    <Icon name={"account-edit"} color={COLORS.WHITE} size={30} />
-                    <Text style={{ color: COLORS.WHITE, fontWeight: "600" }}>{"Editar"}</Text>
+                    <Icon name={"account-edit"} color={COLORS.LIGHT_GRAY} size={30} />
+                    <Text style={{ color: COLORS.LIGHT_GRAY, fontWeight: "600" }}>{"Editar"}</Text>
                 </TouchableOpacity>
             </View>
         )

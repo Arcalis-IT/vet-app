@@ -62,8 +62,8 @@ const Home = ({ navigation, route }) => {
         try {
             const value = await AsyncStorage.getItem('@vetapp:user')
             if (value !== null) {
-                let _json = JSON.parse(value); //console.log(_json[0].name);
-                setUseData({ name: _json[0]?.name })
+                let _json = JSON.parse(value);
+                setUseData({ name: _json?.name })
             }
         } catch (e) {
             console.log("erro -->"  + e);

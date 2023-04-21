@@ -10,23 +10,34 @@ import { StyleSheet } from "react-native";
 import { COLORS, SIZES } from "../../utilities/route";
 
 const headerStyles = StyleSheet.create({
+    scroolArea: {
+        padding: SIZES.PADDING,
+        backgroundColor: COLORS.WHITE,
+        marginTop: -30,
+        borderTopRightRadius: SIZES.RADIUS * 2,
+        borderTopLeftRadius: SIZES.RADIUS * 2,
+    },
     container: {
         display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'space-between'
-        //backgroundColor: 'white'
+        justifyContent: 'space-between',
+        padding: SIZES.PADDING,
+        paddingBottom: SIZES.PADDING * 2
     },
     text: {
         color: COLORS.BLUE
     },
     btn: {
         display: 'flex',
-        flexDirection: 'row',
+        flexDirection: "row",
         alignItems: 'center',
-        justifyContent: 'center',
-        width: '10%',
-        padding: 3,
+        gap: 5,
+        backgroundColor: COLORS.TRANSPARENT_BLACK1,
+        padding: SIZES.PADDING / 3,
+        borderRadius: SIZES.RADIUS / 2,
+        borderColor: COLORS.WHITE,
+        borderWidth: 1,
     }
 })
 
