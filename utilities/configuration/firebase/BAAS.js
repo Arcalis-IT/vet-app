@@ -52,11 +52,21 @@ const authentication = async ({ user, pass }) => {
         }
 
     }
-
-
-
 }
 
+const updateUserInformation = async ({ id, updateData }) => {
+    console.log("esse é o ID -> " + id);
+
+    // --- GET USER
+    const firebaseQuery = await firebase().collection('users').where('id', "==", subscriber?.user?.uid).update({
+        name: "Luis G S Starlino"
+    }).then(() => {
+        console.log('User updated!');
+    });
+}
+
+
 export default {
-    authentication
+    authentication,
+    updateUserInformation
 }

@@ -41,7 +41,7 @@ const Login = ({ navigation, route }) => {
     const [showPwd, setShowPwd] = useState(false);
 
     // --- Modal Config
-    const [modal, setModal] = useState({ visible: false, text: '', action: out, type: '' });
+    const [modal, setModal] = useState({ visible: false, text: '', action: out, type: 'alert' });
     const [loading, setLoading] = useState(false);
 
     const out = () => {

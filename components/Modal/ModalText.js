@@ -19,7 +19,7 @@ import { main } from "./style";
 import Icon from 'react-native-vector-icons/Feather';
 import { COLORS, GENERAL_STYLE } from "../../utilities/route";
 
-export default function AlertMessage({ message, action, visible, outClick, type }) {
+export default function AlertMessage({ message, action, visible, outClick, type, btnTxt1 = null }) {
 
 
     return (
@@ -30,12 +30,15 @@ export default function AlertMessage({ message, action, visible, outClick, type 
             animationOutTiming={400}
         >
             {/* ICON */}
-            {type == "alert" &&
+            {type == "alert"
+                 ?
                 <Icon name={"alert-triangle"} color={COLORS.WHITE} size={150} />
+                : 
+                <Icon name={type} color={COLORS.WHITE} size={150} />
             }
 
             {/* FIXED TITLE */}
-            <Text style={[GENERAL_STYLE.title, { color: COLORS.WHITE }]}>VET APP Alerta</Text>
+            <Text style={[GENERAL_STYLE.title, { color: COLORS.WHITE }]}>VET APP</Text>
 
             {/* MESSAGE */}
             <Text style={main.message}>
@@ -44,7 +47,7 @@ export default function AlertMessage({ message, action, visible, outClick, type 
 
             {/* BTN */}
             <TouchableOpacity style={main.btn} onPress={action}>
-                <Text style={main.textBtn}>Entendido</Text>
+                <Text style={main.textBtn}>{btnTxt1 ? btnTxt1 : "Entendido"}</Text>
             </TouchableOpacity>
         </Modal>
     )

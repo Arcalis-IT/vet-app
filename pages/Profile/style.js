@@ -87,38 +87,16 @@ const cardsContainer = StyleSheet.create({
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'flex-start',
-        gap: 7
+        gap: 5
     },
     txt: {
         color: COLORS.WHITE,
         fontSize: SIZES.H3
     },
-    input: {
-        //backgroundColor: 'red',
-        width: '100%',
-        borderBottomWidth: 1,
-        //borderWidth: 1,
-        //borderRadius: SIZES.RADIUS / 3,
-        borderColor: "#c6c6c6",
-        padding: 7,
-        //paddingLeft: 0,
-        //paddingTop: 0,
-        color: "#c6c6c6",
-        marginBottom: 20
-    },
-    inputEdit: {
-        //backgroundColor: 'red',
-        width: '100%',
-        //borderBottomWidth: 1,
-        borderWidth: 1,
-        borderRadius: SIZES.RADIUS / 3,
-        borderColor: COLORS.LIGHT_GRAY,
-        padding: 7,
-        //paddingLeft: 0,
-        //paddingTop: 0,
-        color: COLORS.WHITE,
-        marginBottom: 20
-    }
+    information: {
+        color: "#C6C6C6",
+        fontSize: SIZES.H4
+    }    
 })
 
 const logoubtn = StyleSheet.create({
@@ -155,12 +133,42 @@ const iconTopContainer = StyleSheet.create({
         flexDirection: "row",
         alignItems: 'center',
         gap: 5,
-        backgroundColor: COLORS.DARK_BLUE,
-        padding: SIZES.PADDING / 2.5,
-        borderRadius: SIZES.RADIUS_CIRCLE,
-        //borderColor: COLORS.BLUE,
-        //borderWidth: 1,
+        backgroundColor: COLORS.TRANSPARENT_BLACK3,
+        padding: SIZES.PADDING / 3,
+        borderRadius: SIZES.RADIUS,
+        borderColor: COLORS.WHITE,
+        borderWidth: 1,
+    },
+    teste: {
+        color: 'red'
     }
+})
+
+const modalEdit = StyleSheet.create({
+    main: {
+        backgroundColor: COLORS.WHITE,
+        borderRadius: SIZES.RADIUS,
+        justifyContent: 'flex-start'
+    },
+    container: {
+        marginTop: SIZES.MARGIN * 4,
+        padding: SIZES.PADDING / 2
+    },
+    inputArea: {
+        borderWidth: 1,
+        borderColor: COLORS.BLUE,
+        borderRadius: SIZES.RADIUS,
+        position: 'relative'
+    },
+    inputContainer: {
+        width: '100%',
+        gap: 6
+    },
+    textInput: {
+        color: COLORS.DARK_BLUE,
+        fontSize: SIZES.H3
+    }
+    
 })
 
 export {
@@ -168,6 +176,7 @@ export {
     scrollContainer,
     imageContainer,
     cardsContainer,
+    modalEdit,
     logoubtn,
     infoSec
 }

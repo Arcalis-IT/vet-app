@@ -14,10 +14,11 @@ import {
     ScrollView,
     TextInput
 } from 'react-native';
+import Modal from 'react-native-modal';
 import { useEffect, useRef, useState } from 'react';
 import LinearGradient from 'react-native-linear-gradient';
 import { COLORS, GENERAL_STYLE, IMAGES } from '../../utilities/route';
-import { cardsContainer, iconTopContainer, imageContainer, infoSec, logoubtn, scrollContainer } from './style';
+import { modalEdit, cardsContainer, iconTopContainer, imageContainer, infoSec, logoubtn, scrollContainer, modalContainer } from './style';
 import { Divider } from '@rneui/themed';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import LoadingFrame from '../../components/LoadingFrame/LoadingFrame';
@@ -39,7 +40,6 @@ const Profile = ({ navigation, route }) => {
     //------------------------------------------------
     const [loading, setLoading] = useState(false);
     const [editMode, setEditMode] = useState(false);
-    const [info, setInfo] = useState([]);
     const [infoJson, setInfoJson] = useState({
         name: {
             attr: 'name',
@@ -61,6 +61,22 @@ const Profile = ({ navigation, route }) => {
             attr: 'gender',
             value: ''
         },
+        clinic_name: {
+            attr: 'clinic_name',
+            value: ''
+        },
+        clinic_address: {
+            attr: 'clinic_address',
+            value: ''
+        },
+        clinic_phone: {
+            attr: 'clinic_phone',
+            value: ''
+        },
+        clinic_working_time: {
+            attr: 'clinic_working_time',
+            value: ''
+        },
     })
 
     //------------------------------------------------
@@ -74,7 +90,6 @@ const Profile = ({ navigation, route }) => {
                 let _json = JSON.parse(value); //console.log(_json[0].name);
                 _json[0].clinic_address = _json[0].clinic_address.slice(0, 20).concat('...');
                 //console.log(_json[0].clinic_address)
-                setInfo(_json[0]);
                 setInfoJson({
                     name: {
                         attr: 'name',
@@ -96,31 +111,22 @@ const Profile = ({ navigation, route }) => {
                         attr: 'gender',
                         value: _json[0]?.gender
                     },
-
-                })
-
-                setEditInfo({
-                    name: {
-                        attr: 'name',
-                        value: _json[0]?.name
+                    clinic_name: {
+                        attr: 'clinic_name',
+                        value: _json[0]?.clinic_name
                     },
-                    mail: {
-                        attr: 'mail',
-                        value: _json[0]?.mail
+                    clinic_address: {
+                        attr: 'clinic_address',
+                        value: _json[0]?.clinic_address
                     },
-                    phone: {
-                        attr: 'phone',
-                        value: _json[0]?.phone
+                    clinic_phone: {
+                        attr: 'clinic_phone',
+                        value: _json[0]?.clinic_phone
                     },
-                    cpf: {
-                        attr: 'cpf',
-                        value: _json[0]?.cpf
+                    clinic_working_time: {
+                        attr: 'clinic_working_time',
+                        value: _json[0]?.clinic_working_time
                     },
-                    gender: {
-                        attr: 'gender',
-                        value: _json[0]?.gender
-                    },
-
                 })
 
             }
@@ -155,6 +161,22 @@ const Profile = ({ navigation, route }) => {
             attr: 'gender',
             value: ''
         },
+        clinic_name: {
+            attr: 'clinic_name',
+            value: ''
+        },
+        clinic_address: {
+            attr: 'clinic_address',
+            value: ''
+        },
+        clinic_phone: {
+            attr: 'clinic_phone',
+            value: ''
+        },
+        clinic_working_time: {
+            attr: 'clinic_working_time',
+            value: ''
+        },
     })
 
     const onHandleChange = (key, val) => {
@@ -170,6 +192,42 @@ const Profile = ({ navigation, route }) => {
         }
 
     }
+
+    function renderModalEdit() {
+        return (
+            <Modal isVisible={editMode}
+                animationIn={"zoomIn"}
+                animationOut={"zoomOut"}
+                animationOutTiming={400}
+                style={modalEdit.main}
+            >
+                {/* TOP BTNS */}
+
+
+                {/* MAIN TEXT */}
+                <ScrollView style={modalEdit.container}>
+
+                    <View style={{ alignItems: 'center' }}>
+                        <Text style={[GENERAL_STYLE.title, { color: COLORS.BLUE }]}>Editar informações do perfil</Text>
+                    </View>
+
+                    {/* NOME */}
+                    <View style={[modalEdit.inputContainer, { marginTop: 50 }]}>
+                        <Text style={modalEdit.textInput}>Nome:</Text>
+                        <View style={modalEdit.inputArea}>
+                            <TextInput
+                                style={{ color: COLORS.BLUE, paddingLeft: 15 }}
+                                value={editInfo.name.value}
+                            />
+                        </View>
+                    </View>
+                </ScrollView>
+
+            </Modal>
+        )
+    }
+
+
 
     //------------------------------------------------
     // --- FUNCTION'S
@@ -211,7 +269,7 @@ const Profile = ({ navigation, route }) => {
                 {/* DIVIDER */}
                 <Divider
                     style={{ width: "100%", margin: 20 }}
-                    color={COLORS.DARK_BLUE}
+                    color={COLORS.BG_TESTE}
                     insetType="left"
                     subHeader="React native elements"
                     subHeaderStyle={{}}
@@ -234,53 +292,27 @@ const Profile = ({ navigation, route }) => {
                     <View style={{ gap: 10 }}>
                         <View style={cardsContainer.itemContainer}>
                             <Text style={cardsContainer.txt}>Nome</Text>
-                            <TextInput
-                                style={editMode ? cardsContainer.inputEdit : cardsContainer.input}
-                                value={editMode ? editInfo.name.value : infoJson.name.value}
-                                editable={editMode ? true : false}
-                                onChangeText={value => onHandleChange('name', value)}
-                                
-                            />
+                            <Text style={cardsContainer.information}>{infoJson.name.value}</Text>
                         </View>
 
                         <View style={cardsContainer.itemContainer}>
                             <Text style={cardsContainer.txt} >Email:</Text>
-                            <TextInput
-                                style={editMode ? cardsContainer.inputEdit : cardsContainer.input}
-                                value={editMode ? editInfo.mail.value : infoJson.mail.value}
-                                editable={editMode ? true : false}
-                                onChangeText={value => onHandleChange('mail', value)}
-                            />
+                            <Text style={cardsContainer.information}>{infoJson.mail.value}</Text>
                         </View>
 
                         <View style={cardsContainer.itemContainer}>
                             <Text style={cardsContainer.txt} >Telefone:</Text>
-                            <TextInput
-                                style={editMode ? cardsContainer.inputEdit : cardsContainer.input}
-                                value={editMode ? editInfo.phone.value : infoJson.phone.value}
-                                editable={editMode ? true : false}
-                                onChangeText={value => onHandleChange('pho', value)}
-                            />
+                            <Text style={cardsContainer.information}>{infoJson.phone.value}</Text>
                         </View>
 
                         <View style={cardsContainer.itemContainer}>
                             <Text style={cardsContainer.txt} >CPF:</Text>
-                            <TextInput
-                                style={editMode ? cardsContainer.inputEdit : cardsContainer.input}
-                                value={editMode ? editInfo.cpf.value : infoJson.cpf.value}
-                                editable={editMode ? true : false}
-                                onChangeText={value => onHandleChange('v', value)}
-                            />
+                            <Text style={cardsContainer.information}>{infoJson.cpf.value}</Text>
                         </View>
 
                         <View style={cardsContainer.itemContainer}>
                             <Text style={cardsContainer.txt} >Sexo:</Text>
-                            <TextInput
-                                style={editMode ? cardsContainer.inputEdit : cardsContainer.input}
-                                value={editMode ? editInfo : infoJson ?? "".gender.value ?? ""}
-                                editable={editMode ? true : false}
-                                onChangeText={value => onHandleChange('va', value)}
-                            />
+                            <Text style={cardsContainer.information}>{infoJson.gender.value}</Text>
                         </View>
                     </View>
 
@@ -298,41 +330,26 @@ const Profile = ({ navigation, route }) => {
                     <Text style={[GENERAL_STYLE.title, cardsContainer.title]}>Dados Profissionais</Text>
 
                     {/* ITENS CARD */}
+
                     <View style={{ gap: 10 }}>
                         <View style={cardsContainer.itemContainer}>
                             <Text style={cardsContainer.txt} >Clínica</Text>
-                            <TextInput
-                                style={editMode ? cardsContainer.inputEdit : cardsContainer.input}
-                                value={info?.clinic_name ?? ""}
-                                editable={false}
-                            />
+                            <Text style={cardsContainer.information}>{infoJson.clinic_name.value}</Text>
                         </View>
 
                         <View style={cardsContainer.itemContainer}>
                             <Text style={cardsContainer.txt} >Endereço:</Text>
-                            <TextInput
-                                style={editMode ? cardsContainer.inputEdit : cardsContainer.input}
-                                value={info?.clinic_address ?? ""}
-                                editable={false}
-                            />
+                            <Text style={cardsContainer.information}>{infoJson.clinic_address.value}</Text>
                         </View>
 
                         <View style={cardsContainer.itemContainer}>
                             <Text style={cardsContainer.txt} >Telefone:</Text>
-                            <TextInput
-                                style={editMode ? cardsContainer.inputEdit : cardsContainer.input}
-                                value={info?.clinic_phone ?? ""}
-                                editable={false}
-                            />
+                            <Text style={cardsContainer.information}>{infoJson.clinic_phone.value}</Text>
                         </View>
 
                         <View style={cardsContainer.itemContainer}>
                             <Text style={cardsContainer.txt} >Funcionamento:</Text>
-                            <TextInput
-                                style={editMode ? cardsContainer.inputEdit : cardsContainer.input}
-                                value={info?.clinic_working_time ?? ""}
-                                editable={false}
-                            />
+                            <Text style={cardsContainer.information}>{infoJson.clinic_working_time.value}</Text>
                         </View>
                     </View>
 
@@ -359,9 +376,9 @@ const Profile = ({ navigation, route }) => {
                 </TouchableOpacity>
 
                 {/* EDIT */}
-                <TouchableOpacity style={iconTopContainer.btn} onPress={() => setEditMode(!editMode)}>
-                    <Icon name={editMode ? "check" : "account-edit"} color={COLORS.WHITE} size={30} />
-                    <Text style={{ color: COLORS.WHITE, fontWeight: "600" }}>{editMode ? "Salvar" : "Editar"}</Text>
+                <TouchableOpacity style={iconTopContainer.btn} onPress={() => {navigation.navigate('EditProfile')}}>
+                    <Icon name={"account-edit"} color={COLORS.WHITE} size={30} />
+                    <Text style={{ color: COLORS.WHITE, fontWeight: "600" }}>{"Editar"}</Text>
                 </TouchableOpacity>
             </View>
         )
@@ -376,6 +393,9 @@ const Profile = ({ navigation, route }) => {
                 visible={loading}
                 color={COLORS.LIGHT_BLUE}
             />
+
+            {/* MODAL EDIT */}
+            {renderModalEdit()}
 
             {/* IMAGE EFECCTS */}
             {renderBackImage()}
