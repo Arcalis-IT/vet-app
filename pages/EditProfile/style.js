@@ -12,7 +12,7 @@ import { COLORS, SIZES } from "../../utilities/route";
 const headerStyles = StyleSheet.create({
     scroolArea: {
         padding: SIZES.PADDING,
-        backgroundColor: COLORS.WHITE,
+        backgroundColor: COLORS.LIGHT_GRAY,
         marginTop: -30,
         borderTopRightRadius: SIZES.RADIUS * 2,
         borderTopLeftRadius: SIZES.RADIUS * 2,

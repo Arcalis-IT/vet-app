@@ -184,7 +184,7 @@ const Profile = ({ navigation, route }) => {
         return (
             <LinearGradient
                 style={scrollContainer.infoContainer}
-                colors={[COLORS.WHITE, COLORS.WHITE]} // start={{ x: 0.0, y: 1.0 }} // end={{ x: 1, y: 0.15 }} 
+                colors={[COLORS.LIGHT_GRAY, COLORS.LIGHT_GRAY]} // start={{ x: 0.0, y: 1.0 }} // end={{ x: 1, y: 0.15 }} 
             >
                 {/* TOUPIMAGE */}
                 <TouchableOpacity style={imageContainer.main}>
@@ -318,7 +318,7 @@ const Profile = ({ navigation, route }) => {
 
 
     return (
-        <ScrollView style={scrollContainer.main}>
+        <ScrollView style={[]}>
 
             {/* LOADING FRAME POP-UP */}
             <LoadingFrame

@@ -26,6 +26,11 @@ export const GENERAL_STYLE = StyleSheet.create({
         fontWeight: 'bold',
         marginBottom: SIZES.MARGIN
     },
+    subtitle: {
+        color: COLORS.DARK_GRAY,
+        fontSize: SIZES.H4,
+        marginBottom: SIZES.MARGIN
+    },
     barSpace: {
         marginBottom:  60
     }
