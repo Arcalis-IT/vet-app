@@ -11,6 +11,7 @@ import Login from "./Login/Login";
 import Initial from "./Initial/Initial";
 import Profile from "./Profile/Profile";
 import EditProfile from "./EditProfile/EditProfile";
+import FormAppointment from "./FormAppointment/FormAppointment";
 
 
 export {
@@ -18,5 +19,6 @@ export {
     Login,
     Profile,
     Initial,
-    EditProfile
+    EditProfile,
+    FormAppointment
 }

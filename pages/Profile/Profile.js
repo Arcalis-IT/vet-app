@@ -22,6 +22,7 @@ import { modalEdit, cardsContainer, iconTopContainer, imageContainer, infoSec, l
 import { Divider } from '@rneui/themed';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import LoadingFrame from '../../components/LoadingFrame/LoadingFrame';
+import auth from '@react-native-firebase/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Profile = ({ navigation, route }) => {
@@ -39,7 +40,6 @@ const Profile = ({ navigation, route }) => {
     // --- CONST'S
     //------------------------------------------------
     const [loading, setLoading] = useState(false);
-    const [editMode, setEditMode] = useState(false);
     const [infoJson, setInfoJson] = useState({
         name: {
             attr: 'name',
@@ -87,9 +87,9 @@ const Profile = ({ navigation, route }) => {
         try {
             const value = await AsyncStorage.getItem('@vetapp:user')
             if (value !== null) {
-                let _json = JSON.parse(value); 
+                let _json = JSON.parse(value);
                 _json.clinic_address = _json.clinic_address.slice(0, 20).concat('...');
-                //console.log(_json.clinic_address)
+
                 setInfoJson({
                     name: {
                         attr: 'name',
@@ -138,96 +138,28 @@ const Profile = ({ navigation, route }) => {
     }
 
     //------------------------------------------------
-    // --- EDIT PROFILE
+    // --- LOGOUT FUNCTION
     //------------------------------------------------
-    const [editInfo, setEditInfo] = useState({
-        name: {
-            attr: 'name',
-            value: ''
-        },
-        mail: {
-            attr: 'mail',
-            value: ''
-        },
-        phone: {
-            attr: 'phone',
-            value: ''
-        },
-        cpf: {
-            attr: 'cpf',
-            value: ''
-        },
-        gender: {
-            attr: 'gender',
-            value: ''
-        },
-        clinic_name: {
-            attr: 'clinic_name',
-            value: ''
-        },
-        clinic_address: {
-            attr: 'clinic_address',
-            value: ''
-        },
-        clinic_phone: {
-            attr: 'clinic_phone',
-            value: ''
-        },
-        clinic_working_time: {
-            attr: 'clinic_working_time',
-            value: ''
-        },
-    })
+    async function logoutUSER() {
 
-    const onHandleChange = (key, val) => {
+        setLoading(true);
 
-        if (key === editInfo[key].attr) {
-            setEditInfo({
-                ...editInfo,
-                [key]: {
-                    ...editInfo[key],
-                    value: val
-                }
-            })
-        }
+        // --- LOGOUT
+        auth().signOut(); 
 
+        // --- Clear Async Storage
+        await AsyncStorage.removeItem('@vetapp:loginON');
+
+        navigation.reset({
+            index: 0,
+            routes: [
+                {
+                    name: 'Init'
+                },
+            ],
+        })
+        setLoading(false);
     }
-
-    function renderModalEdit() {
-        return (
-            <Modal isVisible={editMode}
-                animationIn={"zoomIn"}
-                animationOut={"zoomOut"}
-                animationOutTiming={400}
-                style={modalEdit.main}
-            >
-                {/* TOP BTNS */}
-
-
-                {/* MAIN TEXT */}
-                <ScrollView style={modalEdit.container}>
-
-                    <View style={{ alignItems: 'center' }}>
-                        <Text style={[GENERAL_STYLE.title, { color: COLORS.BLUE }]}>Editar informações do perfil</Text>
-                    </View>
-
-                    {/* NOME */}
-                    <View style={[modalEdit.inputContainer, { marginTop: 50 }]}>
-                        <Text style={modalEdit.textInput}>Nome:</Text>
-                        <View style={modalEdit.inputArea}>
-                            <TextInput
-                                style={{ color: COLORS.BLUE, paddingLeft: 15 }}
-                                value={editInfo.name.value}
-                            />
-                        </View>
-                    </View>
-                </ScrollView>
-
-            </Modal>
-        )
-    }
-
-
 
     //------------------------------------------------
     // --- FUNCTION'S
@@ -357,7 +289,7 @@ const Profile = ({ navigation, route }) => {
 
 
                 {/* LOGOUT BTN */}
-                <TouchableOpacity style={logoubtn.container}>
+                <TouchableOpacity style={logoubtn.container} onPress={() => logoutUSER()}>
                     <Text style={logoubtn.txt}>Sair da conta</Text>
                 </TouchableOpacity>
 
@@ -376,7 +308,7 @@ const Profile = ({ navigation, route }) => {
                 </TouchableOpacity>
 
                 {/* EDIT */}
-                <TouchableOpacity style={iconTopContainer.btn} onPress={() => {navigation.navigate('EditProfile')}}>
+                <TouchableOpacity style={iconTopContainer.btn} onPress={() => { navigation.navigate('EditProfile') }}>
                     <Icon name={"account-edit"} color={COLORS.LIGHT_GRAY} size={30} />
                     <Text style={{ color: COLORS.LIGHT_GRAY, fontWeight: "600" }}>{"Editar"}</Text>
                 </TouchableOpacity>
@@ -393,9 +325,6 @@ const Profile = ({ navigation, route }) => {
                 visible={loading}
                 color={COLORS.LIGHT_BLUE}
             />
-
-            {/* MODAL EDIT */}
-            {renderModalEdit()}
 
             {/* IMAGE EFECCTS */}
             {renderBackImage()}

@@ -69,8 +69,6 @@ const Home = ({ navigation, route }) => {
             console.log("erro -->"  + e);
             alert(e);
         }
-
-
     }
 
     //------------------------------------------------

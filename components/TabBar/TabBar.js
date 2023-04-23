@@ -7,7 +7,7 @@
 // IMPORTS
 //------------------------------------------------
 import style from "./style";
-import { Home, Profile } from '../../pages/routes';
+import { Home, Profile, FormAppointment } from '../../pages/routes';
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { TabIcon } from '../route';
 
@@ -35,8 +35,8 @@ const Tabs = ({navigation, route}) => {
                 }}
             />
             <Tab.Screen
-                name="HomeTESTE"
-                component={Home}
+                name="form-appointment"
+                component={FormAppointment}
                 options={{
                     tabBarIcon: ({focused}) => <TabIcon focused={focused} icon={ focused ? "ios-add-circle" : "ios-add-circle-outline"} />,
                 }}

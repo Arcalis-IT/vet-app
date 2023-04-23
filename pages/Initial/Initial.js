@@ -17,11 +17,31 @@ import {
 } from 'react-native';
 import { background, imageView, textsView, btnsView, versionTag } from './style';
 import LinearGradient from 'react-native-linear-gradient';
+import { useState, useEffect } from 'react';
 import { COLORS, GENERAL_STYLE, IMAGES } from '../../utilities/route'
 import DeviceInfo from 'react-native-device-info';
+import auth from '@react-native-firebase/auth';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 //_______________MAIN_____________________________
 const Initial = ({ navigation, route }) => {
+
+    //------------------------------------------------
+    // --- USE EFFECT'S
+    //------------------------------------------------
+    useEffect(() => {
+
+        auth().onAuthStateChanged((_user) => {
+
+            if (_user) {
+                // --- Save in Async Storage | Secction
+                AsyncStorage.setItem('@vetapp:loginON', _user.uid);
+            } else {
+                console.log("Não tem login")
+            }
+        })
+    }, [])
+
     //------------------------------------------------
     // --- CONST'S
     //------------------------------------------------

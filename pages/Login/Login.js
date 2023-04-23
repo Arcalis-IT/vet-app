@@ -17,13 +17,62 @@ import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/AntDesign';
 import PassIcon from 'react-native-vector-icons/Ionicons';
 import { btnContainer, iconContainer, inputsContainer, mainContainer, textContainer } from './style';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import AlertMessage from '../../components/Modal/ModalText';
 import LoadingFrame from '../../components/LoadingFrame/LoadingFrame';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 //_______________MAIN_____________________________
 const Login = ({ navigation, route }) => {
+
+    //------------------------------------------------
+    // --- USE EFFECT'S
+    //------------------------------------------------
+    useEffect(() => {
+        setLoading(true);
+        checkUser();
+        // setLoading(false);
+    }, [])
+
+    //------------------------------------------------
+    // --- CHECK USER
+    //------------------------------------------------
+    const checkUser = async () => {
+
+        try {
+            const value = await AsyncStorage.getItem('@vetapp:loginON')
+            console.log(value);
+            if (value !== null) { // --- EXIST A SECCTION, GET DATA FROM THIS ID
+
+                setLoading(true);
+                await BAAS.getUserData({ id: value });
+
+                navigation.reset({
+                    index: 0,
+                    routes: [
+                        {
+                            name: 'Tab'
+                        },
+                    ],
+                })
+            }else {
+                setLoading(false);
+            }    
+        } catch (e) {
+            console.log("esse é o erro --> " + e);
+            setLoading(false);
+            setModal({
+                visible: true,
+                text: e,
+                action: out,
+                type: 'alert'
+            })
+        }
+
+    }
+
+
 
     //------------------------------------------------
     // --- CONST'S
@@ -116,7 +165,7 @@ const Login = ({ navigation, route }) => {
                 routes: [
                     {
                         name: 'Tab',
-                        params: {userId: user?.user.uid}
+                        params: { userId: user?.user.uid }
                     },
                 ],
             })
