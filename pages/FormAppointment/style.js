@@ -38,14 +38,20 @@ const headerContainer = StyleSheet.create({
 })
 
 const inptContainer = StyleSheet.create({
-    scroll: {
+    headerEff: {
         borderTopLeftRadius: SIZES.RADIUS * 2,
         borderTopRightRadius: SIZES.RADIUS * 2,
         marginTop: -SIZES.MARGIN * 3,
-        padding: SIZES.PADDING
+        backgroundColor: COLORS.LIGHT_GRAY,
+    },
+    scroll: {
+        padding: SIZES.PADDING,
+        height: 200,
+        color: 'black',
     },
     containerInput : {
-        gap: 5
+        gap: 5,
+        marginBottom: SIZES.MARGIN * 2
         
     },
     inputArea: {
@@ -67,16 +73,49 @@ const inptContainer = StyleSheet.create({
     },
     txt: {
         color: COLORS.GRAY,
-        fontWeight: "400"
+        fontWeight: "400",
+    },
+    comment: {
+        flexWrap: 'wrap',
+        height: 150,
+        alignItems: 'flex-start',
+        // justifyContent: 'flex-start',
+        // backgroundColor: 'red',
+        // display: 'flex',
+        // flexDirection: 'row'
     },
     labelText: {
         color: COLORS.DARK_GRAY,
         fontWeight: "500",
         fontSize: SIZES.BODY4
+    },
+    dropbox : {
+        backgroundColor: COLORS.TRANSPARENT,
+        height: 65,
+        //padding: SIZES.PADDING / 2.6,
+    }
+})
+
+const btn = StyleSheet.create({
+    container: {
+        backgroundColor: COLORS.BLUE,
+        height: 70,
+        width: '100%',
+        justifyContent: 'center',
+        alignItems: "center",
+        borderRadius: SIZES.RADIUS,
+        marginBottom: 60,
+        marginTop: SIZES.MARGIN
+    },
+    txt: {
+        fontSize: SIZES.H3,
+        fontWeight: "500",
+        color: COLORS.WHITE
     }
 })
 
 export {
+    btn,
     main,
     inptContainer,
     headerContainer

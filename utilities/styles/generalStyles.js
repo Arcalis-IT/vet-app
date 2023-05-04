@@ -18,7 +18,7 @@ export const GENERAL_STYLE = StyleSheet.create({
     },
     view: {
         backgroundColor: COLORS.LIGHT_GRAY,
-        height: '100%'
+        //height: '100%'
     },
     title: {
         color: COLORS.DARK_GRAY,
