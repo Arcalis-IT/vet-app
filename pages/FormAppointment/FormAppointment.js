@@ -24,6 +24,8 @@ import DATE_ICON from 'react-native-vector-icons/MaterialCommunityIcons'
 import { useEffect, useState } from 'react';
 import DropDownPicker from 'react-native-dropdown-picker';
 import LinearGradient from 'react-native-linear-gradient';
+import { BAAS } from '../../utilities/route';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const FormAppointment = ({ navigation, route }) => {
 
@@ -58,7 +60,7 @@ const FormAppointment = ({ navigation, route }) => {
     ]);
 
     // --- Modal Alert Config
-    const [modal, setModal] = useState({ visible: false, text: '', action: out, type: 'alert' });
+    const [modal, setModal] = useState({ visible: false, text: '', action: out, type: 'alert', outfunction: out });
     const [loading, setLoading] = useState(false);
 
     const out = () => {
@@ -66,7 +68,20 @@ const FormAppointment = ({ navigation, route }) => {
     };
 
 
+    //------------------------------------------------
+    // --- LISTENER ATTRS
+    //------------------------------------------------
+    useEffect(() => {
+        if (valueDrop) {
+            onHandleChange('description', valueDrop)
+        }
+    }, [valueDrop])
 
+    useEffect(() => {
+        if (valueDropAnimals) {
+            onHandleChange('animal', valueDropAnimals)
+        }
+    }, [valueDropAnimals])
 
 
     //------------------------------------------------
@@ -111,7 +126,7 @@ const FormAppointment = ({ navigation, route }) => {
         const date = new Date(selectedHour);
         const timeString = new Intl.DateTimeFormat('en-US', { hour: '2-digit', minute: '2-digit', hour12: false }).format(date);
         onHandleChange('hour', timeString);
-        setChangeHour(changeHour+1);
+        setChangeHour(changeHour + 1);
 
     }
 
@@ -139,6 +154,14 @@ const FormAppointment = ({ navigation, route }) => {
         comments: {
             attr: 'comments',
             value: ''
+        },
+        description: {
+            attr: 'description',
+            value: ''
+        },
+        animal: {
+            attr: 'animal',
+            value: ''
         }
     })
 
@@ -159,39 +182,89 @@ const FormAppointment = ({ navigation, route }) => {
     //  --- Função que envia novas consultas
     /***************************************************************************************/
     const onSubmit = async () => {
-        const missingAtts = checkInputs();
-        if (missingAtts.length > 0 && missingAtts.length == 6) {
 
+        const missingAtts = checkInputs();
+
+        //------------------------------------------------
+        // TRATAMENTO DE ERROS
+        //------------------------------------------------
+        if (missingAtts.length > 0 && missingAtts.length == 6) {
             setModal({
                 visible: true,
                 text: "Todos os campos são obrigatórios",
                 action: out,
-                type: 'alert'
+                type: 'alert',
+                outfunction: out
             })
             return;
         }
-        if (missingAtts.length > 0 && missingAtts.length != 1  ) {
-
+        if (missingAtts.length > 0 && missingAtts.length != 1) {
             setModal({
                 visible: true,
                 text: `Os campos : ${missingAtts.toString().replace(",", ", ")} são obrigatórios para o envio de novas consultas`,
                 action: out,
-                type: 'alert'
+                type: 'alert',
+                outfunction: out
             })
             return;
         }
 
-        if (missingAtts.length == 1 ) {
-
+        if (missingAtts.length == 1) {
             setModal({
                 visible: true,
                 text: `O campo ${missingAtts.toString().replace(" ", " ")} é obrigatório para o envio de novas consultas`,
                 action: out,
-                type: 'alert'
+                type: 'alert',
+                outfunction: out
             })
             return;
         }
-        console.log("Nem vai chegar aqui")
+
+        //------------------------------------------------
+        // SEND DATA
+        //------------------------------------------------
+        try {
+            setLoading(true);
+            const value = await AsyncStorage.getItem('@vetapp:user')
+
+            if (value !== null) {
+                let _json = JSON.parse(value);
+                const insert = await BAAS.addNewAppointment(form, _json?.id);
+                if (insert == true) {
+                    setLoading(false);
+                    setModal({
+                        visible: true,
+                        text: `Consulta inserida com sucesso.\nVolte para a tela inicial para visualizar`,
+                        action: (()=>{navigation.replace('Tab')}),
+                        type: 'check-circle',
+                        outfunction: null
+                    });
+                }
+                
+
+            } else {
+                setLoading(false);
+                setModal({
+                    visible: true,
+                    text: "ERR IEG002 - Erro ao salvar uma nova consulta. Tente novamente mais tarde",
+                    action: out,
+                    type: 'alert',
+                    outfunction: out
+                });
+            }
+
+
+        } catch (error) {
+            console.log("esse é o erro --> " + e);
+            setLoading(false);
+            setModal({
+                visible: true,
+                text: e,
+                action: out,
+                type: 'alert',
+                outfunction: out
+            });
+        }
     }
 
     /**************************************************************************************
@@ -430,7 +503,7 @@ const FormAppointment = ({ navigation, route }) => {
             {/* MODAL POP-UP */}
             <AlertMessage
                 action={modal.action}
-                outClick={out}
+                outClick={modal.outfunction}
                 message={modal.text}
                 visible={modal.visible}
                 type={modal.type}

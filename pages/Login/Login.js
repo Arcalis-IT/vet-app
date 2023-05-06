@@ -41,8 +41,7 @@ const Login = ({ navigation, route }) => {
     const checkUser = async () => {
 
         try {
-            const value = await AsyncStorage.getItem('@vetapp:loginON')
-            console.log(value);
+            const value = await AsyncStorage.getItem('@vetapp:loginON')            
             if (value !== null) { // --- EXIST A SECCTION, GET DATA FROM THIS ID
 
                 setLoading(true);

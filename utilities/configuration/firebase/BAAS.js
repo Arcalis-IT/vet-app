@@ -141,9 +141,9 @@ const getUserData = async ({ id }) => {
 
     if (firebaseQuery) {
 
-        
+
         const response = firebaseQuery.docs?.map((d) => { return { ...d.data() } });
-        
+
         // --- Save in Async Storage | Secction
         AsyncStorage.setItem('@vetapp:user', JSON.stringify(response[0]));
 
@@ -199,9 +199,55 @@ const getUserData = async ({ id }) => {
 
 }
 
+/**************************************************************************************
+// @LuisStarlino |  03/05/2023  21"09
+//  --- Função que envia novas consultas no Firebase
+/***************************************************************************************/
+const addNewAppointment = async (form, userID) => {
+    try {
+        //------------------------------------------------
+        // GET NEW ID
+        //------------------------------------------------
+        const countCollection = await firebase().collection('appointments').get().then((querySnapshot) => { return querySnapshot.size });
+
+        console.log("Total lá ->" + countCollection);
+
+        console.log("form");
+        console.log(form);
+        console.log("form-end");
+        console.log("userID ->" + userID);
+
+        const currentDate = new Date();
+        const formattedDate = currentDate.toLocaleString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false, });
+
+        const _insert = firebase().collection('appointments').
+            doc(`${countCollection+1}_${userID}`).
+            set({
+                userID: userID,
+                insertAT: formattedDate,
+                description: form.description.value,
+                date: form.datetime.value,
+                hour: form.hour.value,
+                onwer: form.owner_name.value,
+                animal: form.animal.value,
+                animal_name: form.animal_name.value,
+                address: form.address.value,
+                comments: form.comments.value,
+            }).then(()=>{return true}).catch(()=>{return false});
+
+    } catch (e) {
+
+        console.log("Errou ao salvar um novo appointment");
+        console.log(e);
+
+        throw "ERR IEG002 - Erro ao salvar uma nova consulta. Tente novamente mais tarde";
+    }
+}
+
 
 export default {
     getUserData,
     authentication,
+    addNewAppointment,
     updateUserInformation
 }
