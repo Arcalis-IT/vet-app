@@ -10,6 +10,11 @@ import { GENERAL_STYLE, IMAGE_STYLE } from "./styles/generalStyles";
 import { COLORS, SIZES } from "./constants/theme";
 
 //------------------------------------------------
+// --- FUNCTION'S
+//------------------------------------------------
+import getIconByAnimal from "./functions/getIcon";
+
+//------------------------------------------------
 // --- IMAGES
 //------------------------------------------------
 import IMAGES from "./constants/images";
@@ -33,5 +38,6 @@ export {
     dummyChart,
     IMAGE_STYLE,
     GENERAL_STYLE,
+    getIconByAnimal,
     dummyCastrations,
 }

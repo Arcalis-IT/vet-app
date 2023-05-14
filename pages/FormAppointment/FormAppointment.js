@@ -48,8 +48,11 @@ const FormAppointment = ({ navigation, route }) => {
     const [openDrop, setOpenDrop] = useState(false);
     const [valueDrop, setValueDrop] = useState(null);
     const [itemsDrop, setItemsDrop] = useState([
-        { label: 'Apple', value: 'apple' },
-        { label: 'Banana', value: 'banana' }
+        { label: 'Vacinação', value: 'Vacinação' },
+        { label: 'Castração', value: 'Castração' },
+        { label: 'Sedação', value: 'Sedação' },
+        { label: 'Resgate', value: 'Resgate' },
+        { label: 'Rotina', value: 'Rotina' }
     ]);
 
     const [openDropAnimals, setOpenDropAnimals] = useState(false);
@@ -235,12 +238,20 @@ const FormAppointment = ({ navigation, route }) => {
                     setModal({
                         visible: true,
                         text: `Consulta inserida com sucesso.\nVolte para a tela inicial para visualizar`,
-                        action: (()=>{navigation.replace('Tab')}),
+                        action: (() => { navigation.replace('Tab') }),
                         type: 'check-circle',
                         outfunction: null
                     });
+                } else {
+                    setModal({
+                        visible: true,
+                        text: "ERR IEG002 - Erro ao salvar uma nova consulta. Tente novamente mais tarde",
+                        action: out,
+                        type: 'alert',
+                        outfunction: out
+                    });
                 }
-                
+
 
             } else {
                 setLoading(false);

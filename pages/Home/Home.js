@@ -21,7 +21,8 @@ import {
     dummyChart,
     COLORS,
     IMAGES,
-    SIZES
+    SIZES,
+    BAAS
 } from '../../utilities/route';
 import { grettingsBoxStyle, mainBox, dotBox, modalBox, chartBox } from './style';
 import { ModalBox } from '../../components/route';
@@ -38,6 +39,7 @@ import openMap from 'react-native-open-maps';
 import { VictoryBar, VictoryChart, VictoryTheme } from "victory-native";
 import firebase from '@react-native-firebase/firestore';
 import LoadingFrame from '../../components/LoadingFrame/LoadingFrame';
+import moment from 'moment';
 
 
 //_______________MAIN_____________________________
@@ -62,23 +64,49 @@ const Home = ({ navigation, route }) => {
         try {
             const value = await AsyncStorage.getItem('@vetapp:user')
             if (value !== null) {
+
                 let _json = JSON.parse(value);
-                setUseData({ name: _json?.name })
+                setUserData({ name: _json?.name, id: _json?.id })
+
+                // --- GET APPOINTMENTS
+                await getAppointments(_json?.id);
             }
         } catch (e) {
-            console.log("erro -->"  + e);
+            console.log("erro -->" + e);
             alert(e);
         }
     }
 
+    /**************************************************************************************
+    // @LuisStarlino |  07/05/2023  09"54
+    //  --- Nova função que monta a exibição das consultas.
+    /***************************************************************************************/
+    const getAppointments = async (id) => {
+        try {
+            const value = await BAAS.getAppointments(id);
+
+            if (value != null && value.length > 0 && value[0] != undefined) {
+                setAppointments(value);
+            }
+            console.log("Ja dentro do value");
+            console.log(value[0]?.date.toDate());
+            console.log("Ja dentro do value --- end");
+
+        } catch (e) {
+            console.log("erro -->" + e);
+            alert(e);
+        }
+    }
     //------------------------------------------------
     // --- CONST'S
     //------------------------------------------------
     const mainModalRef = useRef();
     const [loading, setLoading] = useState(false);
+    const [appointments, setAppointments] = useState(null);
     const [modalIndex, setModalIndex] = useState(0);
-    const [userData, setUseData] = useState({
+    const [userData, setUserData] = useState({
         name: '',
+        id: ''
     })
 
 
@@ -111,7 +139,9 @@ const Home = ({ navigation, route }) => {
     //------------------------------------------------
     function renderModalDetails() {
         return (
-            <Modal isVisible={showModal} key={modalItem?.id} style={{ alignItems: 'center' }}
+            <Modal isVisible={showModal}
+                //key={modalItem?.id}
+                style={{ alignItems: 'center' }}
                 onBackdropPress={() => setShowModal(false)}
             >
                 <View style={modalBox.container}>
@@ -125,7 +155,7 @@ const Home = ({ navigation, route }) => {
                                 <Icon2 name={"medicinebox"} size={20} color={COLORS.WHITE} />
                                 <Text style={modalBox.typeName}>Descrição:</Text>
                             </View>
-                            <Text style={modalBox.dataName}>{modalItem?.descriptionType}</Text>
+                            <Text style={modalBox.dataName}>{modalItem?.description}</Text>
                         </View>
                     </View>
 
@@ -135,7 +165,7 @@ const Home = ({ navigation, route }) => {
                                 <Icon3 name={"calendar"} size={20} color={COLORS.WHITE} />
                                 <Text style={modalBox.typeName}>Data:</Text>
                             </View>
-                            <Text style={modalBox.dataName}>{modalItem?.appointment.split(" ")[0].replaceAll('-', '/')}</Text>
+                            <Text style={modalBox.dataName}>{moment(modalItem?.date.toDate()).format('DD/MM/YYYY')}</Text>
                         </View>
                     </View>
 
@@ -145,7 +175,7 @@ const Home = ({ navigation, route }) => {
                                 <Icon2 name={"clockcircleo"} size={20} color={COLORS.WHITE} />
                                 <Text style={modalBox.typeName}>Hora:</Text>
                             </View>
-                            <Text style={modalBox.dataName}>{modalItem?.appointment.split(" ")[1].substring(0, 5)}</Text>
+                            <Text style={modalBox.dataName}>{modalItem?.hour}</Text>
                         </View>
                     </View>
 
@@ -153,9 +183,9 @@ const Home = ({ navigation, route }) => {
                         <View style={modalBox.line}>
                             <View style={modalBox.lineTitle}>
                                 <Icon name={"person"} size={20} color={COLORS.WHITE} />
-                                <Text style={modalBox.typeName}>Dono(a):</Text>
+                                <Text style={modalBox.typeName}>Dono(a) do animal:</Text>
                             </View>
-                            <Text style={modalBox.dataName}>{modalItem?.owner}</Text>
+                            <Text style={modalBox.dataName}>{modalItem?.onwer}</Text>
                         </View>
                     </View>
 
@@ -163,19 +193,9 @@ const Home = ({ navigation, route }) => {
                         <View style={modalBox.line}>
                             <View style={modalBox.lineTitle}>
                                 <Icon name={"person"} size={20} color={COLORS.WHITE} />
-                                <Text style={modalBox.typeName}>Animal:</Text>
+                                <Text style={modalBox.typeName}>Descrição do Animal:</Text>
                             </View>
-                            <Text style={modalBox.dataName}>{modalItem?.type}</Text>
-                        </View>
-                    </View>
-
-                    <View style={modalBox.detailsBox}>
-                        <View style={modalBox.line}>
-                            <View style={modalBox.lineTitle}>
-                                <Icon name={"person"} size={20} color={COLORS.WHITE} />
-                                <Text style={modalBox.typeName}>Descrição:</Text>
-                            </View>
-                            <Text style={modalBox.dataName}>{modalItem?.animalType}</Text>
+                            <Text style={modalBox.dataName}>{modalItem?.animal.charAt(0).toUpperCase() + modalItem?.animal.slice(1)} | {modalItem?.animal_name} </Text>
                         </View>
                     </View>
 
@@ -189,10 +209,24 @@ const Home = ({ navigation, route }) => {
                         </View>
                     </View>
 
-                    <TouchableOpacity style={modalBox.mapBtn} onPress={() => goToMap({ lat: modalItem?.maps.latitude, long: modalItem?.maps.longitude, address: modalItem?.address })}>
+                    <View style={modalBox.detailsBox}>
+                        <View style={modalBox.line}>
+                            <View style={modalBox.lineTitle}>
+                                <Icon name={"person"} size={20} color={COLORS.WHITE} />
+                                <Text style={modalBox.typeName}>Obs:</Text>
+                            </View>
+                            <Text style={modalBox.dataName}>{modalItem?.comments}</Text>
+                        </View>
+                    </View>
+
+                    <TouchableOpacity style={modalBox.mapBtn} onPress={() =>
+                        console.log("Alterar")
+                        //goToMap({ lat: modalItem?.maps.latitude, long: modalItem?.maps.longitude, address: modalItem?.address })
+                    }>
                         <Icon5 name={"google-maps"} size={20} color={COLORS.BLUE} />
                         <Text style={modalBox.mapTxt}>Ver no mapa</Text>
                     </TouchableOpacity>
+
 
                 </View>
             </Modal>
@@ -224,50 +258,50 @@ const Home = ({ navigation, route }) => {
         )
     }
 
-    function renderNextCastrations() {
+    function renderNextsAppointments() {
         return (
             <View>
                 <Text style={GENERAL_STYLE.title}>Próximos Atendimentos</Text>
 
-                <View>
+                {appointments != null && <>
+                    <View>
+                        <Carousel
+                            loop
+                            width={SIZES.WIDTH * 0.9}
+                            height={SIZES.WIDTH / 2.5}
+                            data={appointments}
+                            scrollAnimationDuration={1000}
+                            onSnapToItem={(index) => {
+                                setModalIndex(index); //const indexT = refT.current?.getCurrentIndex();
+                            }}
+                            ref={mainModalRef}
+                            renderItem={({ item, index }) => (
+                                <ModalBox item={item} key={index}
+                                    onPress={() => configurateModal(item)} />
+                            )}
+                        />
 
+                        {/* --- Visual Dots --- */}
+                        <View style={dotBox.container}>
+                            {appointments.map((i, index) => {
+                                return (
+                                    <TouchableOpacity
+                                        key={index}
+                                        onPress={() => { changeMainModal({ newIndex: index }) }}
+                                    >
 
-                    <Carousel
-                        loop
-                        width={SIZES.WIDTH * 0.9}
-                        height={SIZES.WIDTH / 2.5}
-                        data={dummyCastrations}
-                        scrollAnimationDuration={1000}
-                        onSnapToItem={(index) => {
-                            setModalIndex(index);//const indexT = refT.current?.getCurrentIndex();
-                        }}
-                        ref={mainModalRef}
-                        renderItem={({ item, index }) => (
-                            <ModalBox item={item} key={index}
-                                onPress={() => configurateModal(item)} />
-                        )}
-                    />
+                                        <Icon key={i.id}
+                                            name={modalIndex == index ? "dot-fill" : "dot"}
+                                            color={COLORS.BLUE}
+                                            size={modalIndex == index ? 25 : 20}
+                                        />
 
-                    {/* --- Visual Dots --- */}
-                    <View style={dotBox.container}>
-                        {dummyCastrations.map((i, index) => {
-                            return (
-                                <TouchableOpacity
-                                    key={i.id}
-                                    onPress={() => { changeMainModal({ newIndex: index }) }}
-                                >
-
-                                    <Icon key={i.id}
-                                        name={modalIndex == index ? "dot-fill" : "dot"}
-                                        color={COLORS.BLUE}
-                                        size={modalIndex == index ? 25 : 20}
-                                    />
-
-                                </TouchableOpacity>
-                            )
-                        })}
+                                    </TouchableOpacity>
+                                )
+                            })}
+                        </View>
                     </View>
-                </View>
+                </>}
             </View>
         )
     }
@@ -333,8 +367,8 @@ const Home = ({ navigation, route }) => {
             {/* MAIN CONTAINER */}
             <ScrollView style={[GENERAL_STYLE.scrollView, mainBox.container]}>
 
-                {/* NEXT CASTRATIONS */}
-                {renderNextCastrations()}
+                {/* NEXT APPOINTMENTS */}
+                {renderNextsAppointments()}
 
                 {/* REPORTS PAGE */}
                 {renderReports()}

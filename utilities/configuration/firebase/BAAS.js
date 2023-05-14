@@ -7,7 +7,8 @@
 // IMPORTS
 //------------------------------------------------
 import auth from '@react-native-firebase/auth';
-import firebase from '@react-native-firebase/firestore';
+import firebase  from '@react-native-firebase/firestore';
+
 import { getDeviceName, getModel, getSystemName, getSystemVersion } from 'react-native-device-info';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -201,27 +202,20 @@ const getUserData = async ({ id }) => {
 
 /**************************************************************************************
 // @LuisStarlino |  03/05/2023  21"09
-//  --- Função que envia novas consultas no Firebase
+// --- Função que envia novas consultas no Firebase
 /***************************************************************************************/
 const addNewAppointment = async (form, userID) => {
     try {
+
         //------------------------------------------------
         // GET NEW ID
         //------------------------------------------------
         const countCollection = await firebase().collection('appointments').get().then((querySnapshot) => { return querySnapshot.size });
-
-        console.log("Total lá ->" + countCollection);
-
-        console.log("form");
-        console.log(form);
-        console.log("form-end");
-        console.log("userID ->" + userID);
-
         const currentDate = new Date();
         const formattedDate = currentDate.toLocaleString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false, });
 
-        const _insert = firebase().collection('appointments').
-            doc(`${countCollection+1}_${userID}`).
+        firebase().collection('appointments').
+            doc(`${countCollection + 1}_${userID}`).
             set({
                 userID: userID,
                 insertAT: formattedDate,
@@ -233,7 +227,9 @@ const addNewAppointment = async (form, userID) => {
                 animal_name: form.animal_name.value,
                 address: form.address.value,
                 comments: form.comments.value,
-            }).then(()=>{return true}).catch(()=>{return false});
+            }).then(() => { return true }).catch(() => { return false });
+
+        return true;
 
     } catch (e) {
 
@@ -244,10 +240,42 @@ const addNewAppointment = async (form, userID) => {
     }
 }
 
+/**************************************************************************************
+// @LuisStarlino |  07/05/2023  10"03
+// --- Busca as consultas no Firebase de acordo com o id
+/***************************************************************************************/
+const getAppointments = async (id) => {
+    try {
+        //------------------------------------------------
+        // GET DOCS
+        //------------------------------------------------
+        const _appointments = await firebase().
+            collection('appointments')
+            .where('userID', '==', id)
+            .get().then((querySnapshot) => {
+
+                var temp_appointments = [];
+                querySnapshot.forEach(documentSnapshot => {
+                    temp_appointments.push(documentSnapshot.data());
+                });
+
+                return temp_appointments;
+            });
+
+        return _appointments;
+    }
+    catch (e) {
+        console.log("Errou ao recuperar suas informações");
+        console.log(e);
+        throw "ERR IEG003 - Erro ao recuperar suas informações.";
+    }
+}
+
 
 export default {
     getUserData,
     authentication,
+    getAppointments,
     addNewAppointment,
     updateUserInformation
 }

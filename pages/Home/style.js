@@ -62,7 +62,7 @@ const modalBox = StyleSheet.create({
         borderRadius: SIZES.RADIUS,
         padding: SIZES.PADDING,
         alignItems: 'center',
-        gap: 15
+        gap: 15,
     },
     title: {
         color: COLORS.WHITE,
