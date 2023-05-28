@@ -24,19 +24,23 @@ import {
     COLORS,
     IMAGES,
     SIZES,
-    BAAS
+    BAAS,
+    STORAGE_BAAS
 } from '../../utilities/route';
 import LoadingFrame from '../../components/LoadingFrame/LoadingFrame';
-import { headerStyles, infoContainer } from './style';
+import { headerStyles, imageContainer, infoContainer } from './style';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Divider } from '@rneui/themed';
 import LinearGradient from 'react-native-linear-gradient';
+import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 
 //_______________MAIN_____________________________
 const EditProfile = ({ navigation, route }) => {
-
+    //------------------------------------------------
+    // --- USE EFFECT'S
+    //------------------------------------------------
     useEffect(() => {
         setLoading(true);
         getUserInformation();
@@ -46,11 +50,14 @@ const EditProfile = ({ navigation, route }) => {
     //------------------------------------------------
     // --- CONST'S
     //------------------------------------------------
+
     // --- Modal Config
     const [loading, setLoading] = useState(false);
     const [userID, setUserID] = useState(null);
     const [modal, setModal] = useState({ visible: false, text: '', action: out, type: 'alert' });
+    const out = () => { setModal({ visible: false }); };
 
+    // --- Form config
     const [editJson, setEditJson] = useState({
         name: {
             attr: 'name',
@@ -90,7 +97,10 @@ const EditProfile = ({ navigation, route }) => {
         },
     })
 
-    const out = () => { setModal({ visible: false }); };
+    // --- Image config
+    const [dataImage, setDataImage] = useState(null);
+
+
 
     //------------------------------------------------
     // --- ASYNC STORAGE
@@ -152,7 +162,6 @@ const EditProfile = ({ navigation, route }) => {
     //------------------------------------------------
     // --- EDIT PROFILE
     //------------------------------------------------
-
     const onSubmit = async () => {
 
         setModal({
@@ -202,6 +211,40 @@ const EditProfile = ({ navigation, route }) => {
             })
         }
 
+    }
+
+    //------------------------------------------------
+    // --- IMAGE CONFIG
+    //------------------------------------------------
+    const openCamera = async () => {
+        // --- CHECK ANDROID PERMISSION 
+        // --- CHECK ANDROID PERMISSION END
+        const result = await launchCamera({ mediaType: 'photo' }, ((response) => {
+
+
+            const file = {
+                uri: response.uri,
+                //give the name that you wish to give
+                name: "testeLuis" + '.jpg',
+                method: 'POST',
+                path: response.path,
+                type: response.type,
+                notification: {
+                    enabled: true
+                }
+            }
+            console.log(file);
+        }))
+        console.log(result);
+        setDataImage(result);
+        //const result = await launchCamera({mediaType: 'photo'});
+    }
+
+    const uploadImage = async () => {
+        STORAGE_BAAS.sendPhotoToStorage({
+            refPhoto: dataImage.assets[0].fileName,
+            pathPhoto: dataImage.assets[0].uri
+        })
     }
 
 
@@ -374,6 +417,43 @@ const EditProfile = ({ navigation, route }) => {
                             />
                         </View>
                     </View>
+                </View>
+
+                {/* DIVIDER */}
+                <Divider
+                    style={{ width: "100%", paddingTop: 40 }}
+                    color={COLORS.BLUE}
+                    insetType="left"
+                    subHeader="React native elements"
+                    subHeaderStyle={{}}
+                    width={1}
+                    orientation="horizontal"
+                />
+
+                {/* EDIT IMAGE CONTAINER */}
+                <View style={infoContainer.container}>
+
+                    <Text style={[GENERAL_STYLE.title, { marginTop: -20, marginBottom: -10 }]}>Atualizar foto</Text>
+
+                    {/* IMAGE PREVIEW */}
+                    {dataImage !== null &&
+                        <View style={{ alignItems: 'center' }}>
+                            <Image source={{ uri: dataImage.assets[0].uri }}
+                                style={imageContainer.image}
+                            />
+                        </View>
+                    }
+
+                    {/* BUTTONS OPTS */}
+                    <View style={imageContainer.buttonArea}>
+                        <TouchableOpacity style={imageContainer.btnWhite} onPress={uploadImage}>
+                            <Text style={imageContainer.txtBlue} >Galeria</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={imageContainer.btnBlue} onPress={openCamera}>
+                            <Text style={imageContainer.txt} >Tirar foto</Text>
+                        </TouchableOpacity>
+                    </View>
+
                 </View>
 
                 <View style={{ marginBottom: 180, marginTop: 50 }}>

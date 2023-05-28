@@ -22,12 +22,14 @@ import IMAGES from "./constants/images";
 //------------------------------------------------
 // --- DUMMY DATA
 //------------------------------------------------
-import { dummyCastrations, dummyChart } from "./configuration/database/dummyData";
+import { DEFAULT_DESCRIPTIONS_DROP ,DEFAULT_ANIMALS_DROP, dummyCastrations, dummyChart } from "./configuration/database/dummyData";
 
 //------------------------------------------------
 // --- BAAS
 //------------------------------------------------
 import BAAS from "./configuration/firebase/BAAS";
+import DYNAMIC_BAAS from "./configuration/firebase/DYNAMIC_BAAS";
+import STORAGE_BAAS from "./configuration/firebase/STORAGE_BAAS";
 
 
 export {
@@ -37,7 +39,11 @@ export {
     IMAGES,
     dummyChart,
     IMAGE_STYLE,
+    DYNAMIC_BAAS,
+    STORAGE_BAAS,
     GENERAL_STYLE,
     getIconByAnimal,
     dummyCastrations,
+    DEFAULT_ANIMALS_DROP,
+    DEFAULT_DESCRIPTIONS_DROP,
 }

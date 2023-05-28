@@ -79,10 +79,56 @@ const infoContainer = StyleSheet.create({
         fontSize: SIZES.H3,
         color: COLORS.WHITE,
         fontWeight: "600"
+    },
+})
+
+const imageContainer = StyleSheet.create({
+    buttonArea: {
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        gap: SIZES.GAP
+    },
+    txt: {
+        fontSize: SIZES.H3,
+        color: COLORS.WHITE,
+        fontWeight: "400"
+    },
+    txtBlue: {
+        fontSize: SIZES.H3,
+        color: COLORS.BLUE,
+        fontWeight: "400"
+    },
+    btnBlue: {
+        width: '46%',
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: SIZES.PADDING / 2,
+        backgroundColor: COLORS.BLUE,
+        borderRadius: SIZES.RADIUS
+    },
+    btnWhite: {
+        width: '46%',
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: SIZES.PADDING / 2,
+        backgroundColor: COLORS.TRANSPARENT,
+        borderWidth: 1,
+        borderColor: COLORS.BLUE,
+        borderRadius: SIZES.RADIUS
+    },
+    image: {
+        width: SIZES.WIDTH,
+        height: 350,
+        resizeMode: "contain"
+
     }
 })
 
+
+
 export {
     headerStyles,
-    infoContainer
+    infoContainer,
+    imageContainer
 }

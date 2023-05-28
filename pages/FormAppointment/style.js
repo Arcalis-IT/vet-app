@@ -93,6 +93,10 @@ const inptContainer = StyleSheet.create({
         backgroundColor: COLORS.TRANSPARENT,
         height: 65,
         //padding: SIZES.PADDING / 2.6,
+    },
+    dropboxList: {
+        //backgroundColor: COLORS.BLUE,
+        color: COLORS.TRANSPARENT_BLACK5,
     }
 })
 

@@ -15,7 +15,6 @@ import {
     TextInput
 } from 'react-native';
 import Modal from 'react-native-modal';
-import { COLORS, GENERAL_STYLE, SIZES } from '../../utilities/route';
 import { btn, headerContainer, inptContainer } from './style';
 import AlertMessage from '../../components/Modal/ModalText';
 import LoadingFrame from '../../components/LoadingFrame/LoadingFrame';
@@ -24,8 +23,8 @@ import DATE_ICON from 'react-native-vector-icons/MaterialCommunityIcons'
 import { useEffect, useState } from 'react';
 import DropDownPicker from 'react-native-dropdown-picker';
 import LinearGradient from 'react-native-linear-gradient';
-import { BAAS } from '../../utilities/route';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { COLORS, DEFAULT_DESCRIPTIONS_DROP, GENERAL_STYLE, SIZES, BAAS, DYNAMIC_BAAS, DEFAULT_ANIMALS_DROP } from '../../utilities/route';
 
 const FormAppointment = ({ navigation, route }) => {
 
@@ -33,10 +32,14 @@ const FormAppointment = ({ navigation, route }) => {
     // --- CONST'S
     //------------------------------------------------
     useEffect(() => {
+        setLoading(true);
         changeDataPicker();
         changeHourPicker();
+        getUserAndDrops();
+        setLoading(false);
     }, [])
-
+    const [user, setUser] = useState(null);
+    
     // --- Date & time Picker
     const [date, setDate] = useState();
     const [hour, setHour] = useState();
@@ -47,20 +50,11 @@ const FormAppointment = ({ navigation, route }) => {
     // --- Drop values
     const [openDrop, setOpenDrop] = useState(false);
     const [valueDrop, setValueDrop] = useState(null);
-    const [itemsDrop, setItemsDrop] = useState([
-        { label: 'Vacinação', value: 'Vacinação' },
-        { label: 'Castração', value: 'Castração' },
-        { label: 'Sedação', value: 'Sedação' },
-        { label: 'Resgate', value: 'Resgate' },
-        { label: 'Rotina', value: 'Rotina' }
-    ]);
+    const [itemsDrop, setItemsDrop] = useState(DEFAULT_DESCRIPTIONS_DROP);
 
     const [openDropAnimals, setOpenDropAnimals] = useState(false);
     const [valueDropAnimals, setValueDropAnimals] = useState(null);
-    const [itemsDropAnimals, setItemsDropAnimals] = useState([
-        { label: 'Cachorro', value: 'cachorro' },
-        { label: 'Gato', value: 'gato' }
-    ]);
+    const [itemsDropAnimals, setItemsDropAnimals] = useState(DEFAULT_ANIMALS_DROP);
 
     // --- Modal Alert Config
     const [modal, setModal] = useState({ visible: false, text: '', action: out, type: 'alert', outfunction: out });
@@ -107,6 +101,66 @@ const FormAppointment = ({ navigation, route }) => {
         setHour(new Date());
         onHandleChange('hour', formattedTime);
     };
+
+    async function getUserAndDrops() {
+        const value = await AsyncStorage.getItem('@vetapp:user')
+        if (value !== null) {
+            var temp_user = JSON.parse(value);
+            setUser(temp_user);
+
+            // --- GET DROP'S OPTIONS
+            getDropBoxDescriptions(temp_user.id);
+            getDropBoxAnimals(temp_user.id);
+        }
+
+    }
+
+    async function getDropBoxDescriptions(id) {
+
+        const dropOpts = await DYNAMIC_BAAS.getDescriptionsDrop({ id });
+
+        if (dropOpts != undefined) {
+
+            console.log(dropOpts)
+            // --- TEMP DROP
+            var temp = [];
+
+            // --- MAPPING
+            Object.keys(dropOpts).map((descKey) => {
+
+                temp.push(
+                    { label: dropOpts[descKey], value: dropOpts[descKey] },
+                )
+
+            });
+
+            return setItemsDrop(temp);
+
+        }
+    }
+    async function getDropBoxAnimals() {
+        console.log(user?.id)
+        const dropOpts = await DYNAMIC_BAAS.getAnimalsDrop({ id: user?.id });
+
+        if (dropOpts != undefined) {
+
+            // --- TEMP DROP
+            var temp = [];
+
+            // --- MAPPING
+            Object.keys(dropOpts).map((animalKey) => {
+
+                temp.push(
+                    { label: dropOpts[animalKey], value: dropOpts[animalKey] },
+                )
+
+            });
+
+            return setItemsDropAnimals(temp);
+
+        }
+
+    }
 
 
     const changeAppointmentDate = (event, selectedDate) => {
@@ -412,6 +466,8 @@ const FormAppointment = ({ navigation, route }) => {
                         setOpen={setOpenDrop}
                         setValue={setValueDrop}
                         setItems={setItemsDrop}
+                        listItemLabelStyle={[inptContainer.dropboxList, { margin: 1 }]}
+                        listItemContainerStyle={[inptContainer.dropboxList, { margin: 5 }]}
                         maxHeight={2300}
                     />
                 </View>
@@ -431,6 +487,8 @@ const FormAppointment = ({ navigation, route }) => {
                         setOpen={setOpenDropAnimals}
                         setValue={setValueDropAnimals}
                         setItems={setItemsDropAnimals}
+                        listItemLabelStyle={[inptContainer.dropboxList, { margin: 5 }]}
+                        listItemContainerStyle={[inptContainer.dropboxList, { margin: 10 }]}
                         maxHeight={2300}
                     />
                 </View>

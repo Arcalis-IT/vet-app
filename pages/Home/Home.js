@@ -53,7 +53,7 @@ const Home = ({ navigation, route }) => {
     useEffect(() => {
         setLoading(true);
         getUser();
-        setLoading(false);
+        // setLoading(false);
     }, [])
 
     //------------------------------------------------
@@ -88,11 +88,11 @@ const Home = ({ navigation, route }) => {
             if (value != null && value.length > 0 && value[0] != undefined) {
                 setAppointments(value);
             }
-            console.log("Ja dentro do value");
-            console.log(value[0]?.date.toDate());
-            console.log("Ja dentro do value --- end");
+            
+            setLoading(false);
 
         } catch (e) {
+            setLoading(false);
             console.log("erro -->" + e);
             alert(e);
         }
