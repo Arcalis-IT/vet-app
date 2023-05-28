@@ -66,6 +66,9 @@ const Home = ({ navigation, route }) => {
             if (value !== null) {
 
                 let _json = JSON.parse(value);
+                // console.log("<---Usuário salvo dentro do Async --->")
+                // console.log(_json);
+                // console.log("<---Usuário salvo dentro do Async --->")
                 setUserData({ name: _json?.name, id: _json?.id })
 
                 // --- GET APPOINTMENTS

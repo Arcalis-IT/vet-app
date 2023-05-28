@@ -17,31 +17,25 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 // @LuisStarlino |  18/05/2023 | 20:05
 //  --- Enviado foto para o storage
 /***************************************************************************************/
-const sendPhotoToStorage = async ({ refPhoto, pathPhoto }) => {
+const sendPhotoToStorage = async ({ userID, pathPhoto }) => {
 
-    const reference = storage().ref(refPhoto);
+    const reference = storage().ref(`users/${userID}.jpg`);
     const pathToFile = pathPhoto;
+
     // uploads file
-    await reference.putFile(pathToFile)
+    const sucessUpload = await reference.putFile(pathToFile)
         .then((successCb) => {
             console.log('successCb');
             console.log(successCb);
+            return true;
         })
         .catch((failureCb) => {
             console.log('failureCb');
             console.log(failureCb);
+            return false;
         });;
 
-    // var _drop = await firebase().collection('dropboxAnimals').doc(id).get().then((querySnapshot) => {
-
-    //     if (querySnapshot['_data']) {
-    //         return querySnapshot['_data'];
-    //     }
-    //     return null
-
-    // });
-
-    return null;
+    return sucessUpload;
 }
 
 export default {

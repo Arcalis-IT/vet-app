@@ -8,10 +8,12 @@
 //------------------------------------------------
 import auth from '@react-native-firebase/auth';
 import firebase  from '@react-native-firebase/firestore';
-
 import { getDeviceName, getModel, getSystemName, getSystemVersion } from 'react-native-device-info';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+// --- DATE CONFIG
+const currentDate = new Date();
+const formattedDate = currentDate.toLocaleString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false, });
 
 const authentication = async ({ user, pass }) => {
 
@@ -39,8 +41,6 @@ const authentication = async ({ user, pass }) => {
             const devicePlataform = getSystemName();
             const model = getModel();
             const versionSO = getSystemVersion();
-            const currentDate = new Date();
-            const formattedDate = currentDate.toLocaleString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false, });
 
             if (analyticQuery.docs.length == 0) { // --- Save new
 
@@ -102,7 +102,7 @@ const authentication = async ({ user, pass }) => {
     }
 }
 
-const updateUserInformation = async ({ id, updateData }) => {
+const updateUserInformation = async ({ id, updateData, userChangePhoto }) => {
 
     // --- BUILD THE JSON TO SAVE AND UPDATE
     var newData_json = {
@@ -115,24 +115,23 @@ const updateUserInformation = async ({ id, updateData }) => {
         clinic_address: updateData?.clinic_address.value,
         clinic_phone: updateData?.clinic_phone.value,
         clinic_working_time: updateData?.clinic_working_time.value,
+        id: id,
+        userChangePhoto: userChangePhoto,
+        last_update: formattedDate,
     }
 
-    console.log(newData_json);
-
     try {
-
         await firebase().collection('users').doc(id).update(newData_json);
 
-        // --- Save new AsyncStorage
-        AsyncStorage.setItem('@vetapp:user', JSON.stringify(newData_json));
+        newData_json.last_update = newData_json.last_update.toString();
 
+        AsyncStorage.setItem('@vetapp:user', JSON.stringify(newData_json));
         return true;
     } catch (e) {
         console.log(e);
-
         throw "ERR IEG001 - Erro no servidor. Tente novamente mais tarde";
-
     }
+
 }
 
 const getUserData = async ({ id }) => {
@@ -156,8 +155,6 @@ const getUserData = async ({ id }) => {
         const devicePlataform = getSystemName();
         const model = getModel();
         const versionSO = getSystemVersion();
-        const currentDate = new Date();
-        const formattedDate = currentDate.toLocaleString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false, });
 
         if (analyticQuery.docs.length == 0) { // --- Save new
 
@@ -211,8 +208,6 @@ const addNewAppointment = async (form, userID) => {
         // GET NEW ID
         //------------------------------------------------
         const countCollection = await firebase().collection('appointments').get().then((querySnapshot) => { return querySnapshot.size });
-        const currentDate = new Date();
-        const formattedDate = currentDate.toLocaleString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false, });
 
         firebase().collection('appointments').
             doc(`${countCollection + 1}_${userID}`).

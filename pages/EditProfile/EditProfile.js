@@ -177,13 +177,30 @@ const EditProfile = ({ navigation, route }) => {
         try {
             setLoading(true);
 
-            const update = await BAAS.updateUserInformation({ id: userID, updateData: editJson })
+            const update = await BAAS.updateUserInformation({
+                id: userID,
+                updateData: editJson,
+                userChangePhoto: dataImage != null ? true : false
+            })
 
-            if (update) {
+            var triggerPhoto = true;
+
+            if(dataImage != null ) {
+                
+                const updateFoto = await STORAGE_BAAS.sendPhotoToStorage({
+                    userID: userID,
+                    pathPhoto: dataImage.assets[0].uri
+                });
+
+                triggerPhoto = updateFoto;
+            }
+
+
+            if (update && triggerPhoto ) {
 
                 out(); // --- Out
                 setLoading(false);
-                navigation.replace('Tab')
+                navigation.replace('Tab');
             }
 
         } catch (error) {
@@ -216,35 +233,31 @@ const EditProfile = ({ navigation, route }) => {
     //------------------------------------------------
     // --- IMAGE CONFIG
     //------------------------------------------------
+    // --- Camera Settings
+    const opts = {
+        maxWidth: 1080,
+        maxHeight: 1080,
+        mediaType: 'photo',
+        saveToPhotos: false
+    }
+
     const openCamera = async () => {
         // --- CHECK ANDROID PERMISSION 
         // --- CHECK ANDROID PERMISSION END
-        const result = await launchCamera({ mediaType: 'photo' }, ((response) => {
-
-
-            const file = {
-                uri: response.uri,
-                //give the name that you wish to give
-                name: "testeLuis" + '.jpg',
-                method: 'POST',
-                path: response.path,
-                type: response.type,
-                notification: {
-                    enabled: true
-                }
-            }
-            console.log(file);
-        }))
-        console.log(result);
+        const result = await launchCamera(opts);
         setDataImage(result);
-        //const result = await launchCamera({mediaType: 'photo'});
+    }
+
+    const openLibrary = async () => {
+        const result = await launchImageLibrary(opts, ((r) => {
+            console.log("Catch")
+            return r;
+        }))
+        setDataImage(result);
     }
 
     const uploadImage = async () => {
-        STORAGE_BAAS.sendPhotoToStorage({
-            refPhoto: dataImage.assets[0].fileName,
-            pathPhoto: dataImage.assets[0].uri
-        })
+
     }
 
 
@@ -446,7 +459,7 @@ const EditProfile = ({ navigation, route }) => {
 
                     {/* BUTTONS OPTS */}
                     <View style={imageContainer.buttonArea}>
-                        <TouchableOpacity style={imageContainer.btnWhite} onPress={uploadImage}>
+                        <TouchableOpacity style={imageContainer.btnWhite} onPress={openLibrary}>
                             <Text style={imageContainer.txtBlue} >Galeria</Text>
                         </TouchableOpacity>
                         <TouchableOpacity style={imageContainer.btnBlue} onPress={openCamera}>
