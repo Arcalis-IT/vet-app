@@ -7,6 +7,7 @@
 // IMPORTS
 //------------------------------------------------
 const _myself = require("../../assets/imgs/dummy/profile.jpg");
+const loadingIMG = require("../../assets/imgs/dummy/loading_user.png");
 const home_bg = require("../../assets/imgs/background/background1.png");
 
 // --- Icons
@@ -22,6 +23,7 @@ export default  {
     _myself,
     home_bg,
     initial_bg,
+    loadingIMG,
 
     iconDog,
     iconCat,

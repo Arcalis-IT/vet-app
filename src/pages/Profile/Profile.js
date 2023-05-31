@@ -17,7 +17,7 @@ import {
 import Modal from 'react-native-modal';
 import { useEffect, useRef, useState } from 'react';
 import LinearGradient from 'react-native-linear-gradient';
-import { COLORS, GENERAL_STYLE, IMAGES } from '../../utilities/routes';
+import { COLORS, GENERAL_STYLE, IMAGES, STORAGE_BAAS } from '../../utilities/routes';
 import { modalEdit, cardsContainer, iconTopContainer, imageContainer, infoSec, logoubtn, scrollContainer, modalContainer } from './style';
 import { Divider } from '@rneui/themed';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -33,6 +33,7 @@ const Profile = ({ navigation, route }) => {
     useEffect(() => {
         setLoading(true);
         getUserInformation();
+        getUserPhoto();
         setLoading(false);
     }, [])
 
@@ -40,6 +41,7 @@ const Profile = ({ navigation, route }) => {
     // --- CONST'S
     //------------------------------------------------
     const [loading, setLoading] = useState(false);
+    const [userPhoto, setUserPhoto] = useState(null);
     const [infoJson, setInfoJson] = useState({
         name: {
             attr: 'name',
@@ -137,6 +139,22 @@ const Profile = ({ navigation, route }) => {
 
     }
 
+    const getUserPhoto = async () => {
+
+        try {
+            const value = await AsyncStorage.getItem('@vetapp:userPhoto')
+            if (value) {
+                let _json = JSON.parse(value);
+                setUserPhoto(_json.url);
+            }
+
+        } catch (e) {
+            console.log("erro -->" + e);
+            alert(e);
+        }
+        //const _URL = STORAGE_BAAS.getPhotoFromStorage();
+    }
+
     //------------------------------------------------
     // --- LOGOUT FUNCTION
     //------------------------------------------------
@@ -145,7 +163,7 @@ const Profile = ({ navigation, route }) => {
         setLoading(true);
 
         // --- LOGOUT
-        auth().signOut(); 
+        auth().signOut();
 
         // --- Clear Async Storage
         await AsyncStorage.removeItem('@vetapp:loginON');
@@ -174,7 +192,9 @@ const Profile = ({ navigation, route }) => {
                     style={{ width: '100%', height: '100%' }}
                 >
                     {/* IMG */}
-                    <Image source={IMAGES._myself} style={scrollContainer.img} blurRadius={9} />
+                    <Image
+                        source={!userPhoto ? IMAGES.loadingIMG : { uri: userPhoto }}
+                        style={scrollContainer.img} blurRadius={9} />
                 </LinearGradient>
             </View>
         )
@@ -188,7 +208,7 @@ const Profile = ({ navigation, route }) => {
             >
                 {/* TOUPIMAGE */}
                 <TouchableOpacity style={imageContainer.main}>
-                    <Image source={IMAGES._myself} style={imageContainer.image} />
+                    <Image source={!userPhoto ? IMAGES.loadingIMG : { uri: userPhoto }} style={imageContainer.image} />
                 </TouchableOpacity>
 
                 {/* USER INFO --- SECTION */}

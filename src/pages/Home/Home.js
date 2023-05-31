@@ -94,7 +94,12 @@ const Home = ({ navigation, route }) => {
         } else {
             console.log("Erro ao pegar sua foto");
         }
-        setLoading(false)
+
+        // --- USE THIS TO SHOW THE PHOTO IN THE TIME.
+        const timeout = setTimeout(() => {
+            setLoading(false)
+            clearTimeout(timeout);
+        }, 3000);
     }
 
     /**************************************************************************************
@@ -255,18 +260,20 @@ const Home = ({ navigation, route }) => {
                 <ImageBackground source={IMAGES.home_bg} style={grettingsBoxStyle.container}>
 
                     {/* PROFILE PHOTO */}
-                    <TouchableOpacity style={grettingsBoxStyle.imageBox} onPress={
-                        () => { navigation.navigate("Profile") }
-                    }>
-                        <Image
-                            source={{ uri: photoURL ? photoURL : "" }}
-                            style={IMAGE_STYLE.imageIcon}
-                        />
-                    </TouchableOpacity>
+                    {photoURL &&
+                        <TouchableOpacity style={grettingsBoxStyle.imageBox} onPress={
+                            () => { navigation.navigate("Profile") }
+                        }>
+                            <Image
+                                source={!photoURL ? IMAGES.loadingIMG : { uri: photoURL }}
+                                style={IMAGE_STYLE.imageIcon}
+                            />
+                        </TouchableOpacity>
+                    }
 
                     {/* GRETTINGS - HELLO DR */}
                     <View>
-                        <Text style={grettingsBoxStyle.doctorName}>Olá </Text>
+                        <Text style={grettingsBoxStyle.doctorName}>Olá,</Text>
                         <Text style={grettingsBoxStyle.doctorName}>Dr. {userData.name ?? ""}</Text>
                     </View>
 

@@ -23,6 +23,7 @@ const sendPhotoToStorage = async ({ userID, pathPhoto }) => {
         .then((successCb) => {
             console.log('successCb');
             console.log(successCb);
+            getPhotoFromStorage({ userID: userID });
             return true;
         })
         .catch((failureCb) => {
