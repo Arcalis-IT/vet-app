@@ -149,8 +149,8 @@ const getUserData = async ({ id }) => {
         //------------------------------------------------
         // --- User Photo
         //------------------------------------------------
-        STORAGE_BAAS.getPhotoFromStorage({userID: id});
-        
+        STORAGE_BAAS.getPhotoFromStorage({ userID: id });
+
         // --- Save in Async Storage | Secction
         AsyncStorage.setItem('@vetapp:user', JSON.stringify(response[0]));
 
@@ -243,6 +243,50 @@ const addNewAppointment = async (form, userID) => {
 }
 
 /**************************************************************************************
+// @LuisStarlino |  01/06/2023  18"33
+// --- Função que atualiza o relatório inicial novas consultas no Firebase
+/***************************************************************************************/
+const addNewGeneralReport = async (id, field) => {
+    const FIELDNAME = field;
+    try {
+
+        // --- GET ACTUAL VALUE
+        const firebaseDB = await firebase()
+            .collection('reports')
+            .doc('general')
+            .collection(id)
+            .doc('appointments')
+            .get().then((querySnapshot) => {
+                var temp_reports = querySnapshot.data();
+                var findAtt = false;
+
+                for (const key in temp_reports) {
+                    if (key === field) {
+                        findAtt = true; // --- Ativando o trigger
+                        temp_reports[key] = temp_reports[key] + 1;
+                    };
+                }
+
+                if (!findAtt) temp_reports[field] = 1;
+                return temp_reports;
+        });
+
+
+        await firebase()
+            .collection('reports')
+            .doc('general')
+            .collection(id)
+            .doc('appointments')
+            .set(firebaseDB);
+
+        return null;
+
+    } catch (e) {
+        // console.log(e);
+        // throw "ERR IEG001 - Erro no servidor. Tente novamente mais tarde";
+    }
+}
+/**************************************************************************************
 // @LuisStarlino |  07/05/2023  10"03
 // --- Busca as consultas no Firebase de acordo com o id
 /***************************************************************************************/
@@ -273,11 +317,53 @@ const getAppointments = async (id) => {
     }
 }
 
+/**************************************************************************************
+// @LuisStarlino |  01/06/2023  17"33
+// --- Busca os relatórios gerais no Firebase de acordo com o id
+/***************************************************************************************/
+const getGeneralReports = async (id) => {
+    try {
+
+        //------------------------------------------------
+        // GET REPORTS
+        // -- PATH : reports/general/${id}/appointments
+        //------------------------------------------------
+        const _rep = await firebase().
+            collection('reports').
+            doc('general')
+            .collection(id).
+            doc('appointments')
+            .get().then((querySnapshot) => {
+                var temp_reports = querySnapshot.data();
+                var response = [];
+
+                for (const key in temp_reports) {
+                    response.push({ type: key, number: temp_reports[key] })
+                }
+
+                // querySnapshot.forEach(documentSnapshot => {
+                //     temp_reports.push(documentSnapshot.data());
+                // });
+
+                return response;
+            });
+
+        return _rep;
+
+    }
+    catch (e) {
+        console.log("Errou ao recuperar suas informações");
+        console.log(e);
+        throw "ERR IEG003 - Erro ao recuperar suas informações.";
+    }
+}
 
 export default {
     getUserData,
     authentication,
     getAppointments,
+    getGeneralReports,
     addNewAppointment,
-    updateUserInformation
+    addNewGeneralReport,
+    updateUserInformation,
 }

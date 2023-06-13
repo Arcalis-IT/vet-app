@@ -55,6 +55,20 @@ const Home = ({ navigation, route }) => {
     }, [])
 
     //------------------------------------------------
+    // --- CONST'S
+    //------------------------------------------------
+    const mainModalRef = useRef();
+    const [loading, setLoading] = useState(false);
+    const [appointments, setAppointments] = useState(null);
+    const [reports, setReports] = useState(null);
+    const [modalIndex, setModalIndex] = useState(0);
+    const [photoURL, setPhotoURL] = useState(null);
+    const [userData, setUserData] = useState({
+        name: '',
+        id: ''
+    })
+
+    //------------------------------------------------
     // --- ASYNC STORAGE
     //------------------------------------------------
     const getUser = async () => {
@@ -65,12 +79,13 @@ const Home = ({ navigation, route }) => {
             if (value !== null) {
 
                 let _json = JSON.parse(value);
-                // console.log("<---Usuário salvo dentro do Async --->")
-                // console.log(JSON.parse(photoURL));
-                // console.log("<---Usuário salvo dentro do Async --->")
                 setUserData({ name: _json?.name, id: _json?.id })
+
                 // --- GET APPOINTMENTS
                 await getAppointments(_json?.id);
+
+                // --- GET REPORTS
+                await getReportsBar(_json?.id)
 
                 // --- GET PHOTO
                 await getPhoto();
@@ -79,6 +94,16 @@ const Home = ({ navigation, route }) => {
             console.log("erro -->" + e);
             alert(e);
         }
+    }
+
+    /**************************************************************************************
+    // @LuisStarlino |  01/06/2023  17"33
+    //  --- Pegando as informações para o CHARBAR
+    /***************************************************************************************/
+    const getReportsBar = async (id) => {
+        const tempRep = await BAAS.getGeneralReports(id);
+
+        if (tempRep) setReports(tempRep);
     }
 
     /**************************************************************************************
@@ -117,19 +142,6 @@ const Home = ({ navigation, route }) => {
             alert(e);
         }
     }
-    //------------------------------------------------
-    // --- CONST'S
-    //------------------------------------------------
-    const mainModalRef = useRef();
-    const [loading, setLoading] = useState(false);
-    const [appointments, setAppointments] = useState(null);
-    const [modalIndex, setModalIndex] = useState(0);
-    const [photoURL, setPhotoURL] = useState(null);
-    const [userData, setUserData] = useState({
-        name: '',
-        id: ''
-    })
-
 
     //------------------------------------------------
     // --- MODAL
@@ -287,9 +299,10 @@ const Home = ({ navigation, route }) => {
     function renderNextsAppointments() {
         return (
             <View>
-                <Text style={GENERAL_STYLE.title}>Próximos Atendimentos</Text>
-
                 {appointments != null && <>
+
+                    <Text style={GENERAL_STYLE.title}>Próximos Atendimentos</Text>
+
                     <View>
                         <Carousel
                             loop
@@ -335,33 +348,38 @@ const Home = ({ navigation, route }) => {
     function renderReports() {
         return (
             <View style={{ marginTop: SIZES.MARGIN }}>
-                <Text style={GENERAL_STYLE.title}>Últimos 7 Dias</Text>
 
-                {/* CHART BAR */}
-                <View style={chartBox.container}>
-                    <VictoryChart width={400} theme={VictoryTheme.material}
-                        height={SIZES.CHART_BOX} domainPadding={20}
+                <>
+                    <Text style={GENERAL_STYLE.title}>Últimos 7 Dias</Text>
 
-                    >
-                        <VictoryBar
-                            data={dummyChart} x="type" y="number"
-                            style={{ data: { fill: COLORS.BLUE } }}
-                            alignment="middle"
-                            barWidth={20}
-                            labels={({ datum }) => `${parseInt(datum.number)}`}
+                    {/* CHART BAR */}
+                    <View style={chartBox.container}>
+                        <VictoryChart width={400} theme={VictoryTheme.material}
+                            height={SIZES.CHART_BOX} domainPadding={20}
 
-                        />
-                    </VictoryChart>
-                </View>
+                        >
+                            <VictoryBar
+                                data={reports ?? dummyChart} x="type" y="number"
+                                style={{ data: { fill: COLORS.BLUE } }}
+                                alignment="middle"
+                                animate={true}
+                                barWidth={20}
+                                labels={({ datum }) => `${parseInt(datum.number)}`}
 
-                {/* SEND TO REPORTS PAGE */}
-                <View style={chartBox.btnContainer}>
-                    <Text style={chartBox.callTxt}>Veja os relatórios completos</Text>
-                    <TouchableOpacity style={chartBox.btn}>
-                        <Text style={chartBox.btnText}>Acessar</Text>
-                        <Icon2 name={"arrowright"} color={COLORS.WHITE} size={15} />
-                    </TouchableOpacity>
-                </View>
+                            />
+                        </VictoryChart>
+                    </View>
+
+                    {/* SEND TO REPORTS PAGE */}
+                    <View style={chartBox.btnContainer}>
+                        <Text style={chartBox.callTxt}>Veja os relatórios completos</Text>
+                        <TouchableOpacity style={chartBox.btn}>
+                            <Text style={chartBox.btnText}>Acessar</Text>
+                            <Icon2 name={"arrowright"} color={COLORS.WHITE} size={15} />
+                        </TouchableOpacity>
+                    </View>
+                </>
+
             </View>
         )
     }

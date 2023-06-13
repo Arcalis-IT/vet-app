@@ -288,6 +288,11 @@ const FormAppointment = ({ navigation, route }) => {
                 let _json = JSON.parse(value);
                 const insert = await BAAS.addNewAppointment(form, _json?.id);
                 if (insert == true) {
+
+                    // --- Atualizando o indicador 
+                    BAAS.addNewGeneralReport(_json?.id, form.description.value);
+                    // --- End
+
                     setLoading(false);
                     setModal({
                         visible: true,

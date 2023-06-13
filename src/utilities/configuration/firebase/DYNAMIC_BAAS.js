@@ -36,8 +36,8 @@ const getAnimalsDrop = async ({ id }) => {
 const getDescriptionsDrop = async ({ id }) => {
 
     var _drop = await firebase().collection('dropboxDescriptions').doc(id).get().then((querySnapshot) => {
-        console.log("Dentro do BAASS")
-        console.log(querySnapshot);
+        // console.log("Dentro do BAASS")
+        // console.log(querySnapshot);
         if(querySnapshot['_data']) {
             return querySnapshot['_data'];
         }

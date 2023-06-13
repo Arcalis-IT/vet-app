@@ -9,11 +9,11 @@
 import { IMAGES } from '../../routes';
 
 const dummyChart = [
-    { type: "Vacinação", number: 15 },
-    { type: "Castração", number: 20 },
-    { type: "sedação", number: 2 },
-    { type: "Resgate", number: 8 },
-    { type: "Rotina", number: 22 },
+    { type: "Vacinação", number: 0 },
+    { type: "Castração", number: 0 },
+    { type: "sedação", number: 0 },
+    { type: "Resgate", number: 0 },
+    { type: "Rotina", number: 0 },
 ]
 
 const dummyCastrations = [
