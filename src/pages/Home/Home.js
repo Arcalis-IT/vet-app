@@ -24,22 +24,21 @@ import {
     SIZES,
     BAAS
 } from '../../utilities/routes';
-import { grettingsBoxStyle, mainBox, dotBox, modalBox, chartBox } from './style';
-import { ModalBox } from '../../components/routes';
-import { useEffect, useRef, useState } from 'react';
-import Carousel from 'react-native-reanimated-carousel';
-import Icon from 'react-native-vector-icons/Octicons';
-import Icon2 from 'react-native-vector-icons/AntDesign';
-import Icon3 from 'react-native-vector-icons/Ionicons';
-import Icon4 from 'react-native-vector-icons/Entypo';
-import Icon5 from 'react-native-vector-icons/MaterialCommunityIcons';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import moment from 'moment';
 import Modal from 'react-native-modal';
 import openMap from 'react-native-open-maps';
-import { VictoryBar, VictoryChart, VictoryTheme } from "victory-native";
+import { useEffect, useRef, useState } from 'react';
+import Icon4 from 'react-native-vector-icons/Entypo';
+import Icon from 'react-native-vector-icons/Octicons';
+import Icon3 from 'react-native-vector-icons/Ionicons';
+import Carousel from 'react-native-reanimated-carousel';
+import Icon2 from 'react-native-vector-icons/AntDesign';
+import { ModalBox, SplashScreen } from '../../components/routes';
+import Icon5 from 'react-native-vector-icons/MaterialCommunityIcons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import LoadingFrame from '../../components/LoadingFrame/LoadingFrame';
-import moment from 'moment';
-
+import { VictoryBar, VictoryChart, VictoryTheme } from "victory-native";
+import { grettingsBoxStyle, mainBox, dotBox, modalBox, chartBox } from './style';
 
 //_______________MAIN_____________________________
 const Home = ({ navigation, route }) => {
@@ -50,7 +49,8 @@ const Home = ({ navigation, route }) => {
     // --- USE EFFECT'S
     //------------------------------------------------
     useEffect(() => {
-        setLoading(true);
+        //setLoading(true);
+        setShowSplash(true);
         getUser();
     }, [])
 
@@ -67,6 +67,9 @@ const Home = ({ navigation, route }) => {
         name: '',
         id: ''
     })
+
+    // --- Splash Control
+    const [showSplash, setShowSplash] = useState(false);
 
     //------------------------------------------------
     // --- ASYNC STORAGE
@@ -96,6 +99,8 @@ const Home = ({ navigation, route }) => {
         }
     }
 
+    
+
     /**************************************************************************************
     // @LuisStarlino |  01/06/2023  17"33
     //  --- Pegando as informações para o CHARBAR
@@ -122,7 +127,8 @@ const Home = ({ navigation, route }) => {
 
         // --- USE THIS TO SHOW THE PHOTO IN THE TIME.
         const timeout = setTimeout(() => {
-            setLoading(false)
+            //setLoading(false);
+            setShowSplash(false);
             clearTimeout(timeout);
         }, 3000);
     }
@@ -396,6 +402,8 @@ const Home = ({ navigation, route }) => {
     return (
         <View>
 
+            {showSplash && <SplashScreen/>}
+
             {/* MODAL DETAILS -- EVENTS*/}
             {renderModalDetails()}
 
@@ -418,6 +426,7 @@ const Home = ({ navigation, route }) => {
                 {renderReports()}
 
                 {renderFooter()}
+                
             </ScrollView>
 
 
