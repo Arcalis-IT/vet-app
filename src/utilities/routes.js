@@ -15,9 +15,11 @@ import { COLORS, SIZES } from "./constants/theme";
 import getIconByAnimal from "./functions/getIcon";
 
 //------------------------------------------------
-// --- IMAGES
+// --- IMAGES & LOTTIES
 //------------------------------------------------
 import IMAGES from "./constants/images";
+import LOTTIES from './constants/lotties';
+
 
 //------------------------------------------------
 // --- DUMMY DATA
@@ -37,6 +39,7 @@ export {
     SIZES,
     COLORS,
     IMAGES,
+    LOTTIES,
     dummyChart,
     IMAGE_STYLE,
     DYNAMIC_BAAS,

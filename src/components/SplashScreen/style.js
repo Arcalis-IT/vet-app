@@ -18,13 +18,20 @@ const SpashContainer = StyleSheet.create({
         justifyContent: 'center',
         flexDirection: 'row'
     },
-    frameDog: {
+    frameDog1: {
         position: "absolute",
         top: - 100
     },
-    loadingContainer: {
+    frameDog3: {
+        position: "absolute",
+        top: 0
+    },
+    loadingContainer1: {
         marginTop: SIZES.HEIGHT * .55
-    }
+    },
+    loadingContainer2: {
+        marginTop: SIZES.HEIGHT * .10
+    },
 })
 
 export {
