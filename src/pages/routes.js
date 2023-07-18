@@ -8,6 +8,7 @@
 //------------------------------------------------
 import Home from "./Home/Home";
 import Login from "./Login/Login";
+import Reports from "./Reports/Reports";
 import Initial from "./Initial/Initial";
 import Profile from "./Profile/Profile";
 import EditProfile from "./EditProfile/EditProfile";
@@ -17,8 +18,9 @@ import FormAppointment from "./FormAppointment/FormAppointment";
 export {
     Home,
     Login,
-    Profile,
     Initial,
+    Profile,
+    Reports,
     EditProfile,
     FormAppointment
 }

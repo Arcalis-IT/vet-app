@@ -361,7 +361,8 @@ const Home = ({ navigation, route }) => {
                     {/* CHART BAR */}
                     <View style={chartBox.container}>
                         <VictoryChart width={400} theme={VictoryTheme.material}
-                            height={SIZES.CHART_BOX} domainPadding={20}
+                            height={SIZES.CHART_BOX} domainPadding={20} 
+                            maxDomain={{ y: 5 }}
 
                         >
                             <VictoryBar
@@ -379,7 +380,7 @@ const Home = ({ navigation, route }) => {
                     {/* SEND TO REPORTS PAGE */}
                     <View style={chartBox.btnContainer}>
                         <Text style={chartBox.callTxt}>Veja os relatórios completos</Text>
-                        <TouchableOpacity style={chartBox.btn}>
+                        <TouchableOpacity style={chartBox.btn} onPress={(()=>{navigation.navigate('Reports')})}>
                             <Text style={chartBox.btnText}>Acessar</Text>
                             <Icon2 name={"arrowright"} color={COLORS.WHITE} size={15} />
                         </TouchableOpacity>
