@@ -33,6 +33,12 @@ export const GENERAL_STYLE = StyleSheet.create({
     },
     barSpace: {
         marginBottom:  60
+    },
+    communVIEW: {
+        display: 'flex',
+        flexDirection: 'column',
+        padding: SIZES.PADDING,
+        backgroundColor:'red'
     }
 })
 

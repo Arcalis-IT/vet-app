@@ -7,7 +7,7 @@
 // IMPORTS
 //------------------------------------------------
 import style from "./style";
-import { Home, Profile, FormAppointment } from '../../pages/routes';
+import { Home, Profile, FormAppointment, AgendaScreen } from '../../pages/routes';
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { TabIcon } from '../routes';
 
@@ -42,8 +42,8 @@ const Tabs = ({navigation, route}) => {
                 }}
             />  
             <Tab.Screen
-                name="HomeTESTE3"
-                component={Home}
+                name="Agenda"
+                component={AgendaScreen}
                 options={{
                     tabBarIcon: ({focused}) => <TabIcon focused={focused} icon={ focused ? "calendar" : "calendar-outline"} />,
                 }}
