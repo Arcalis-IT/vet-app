@@ -37,8 +37,7 @@ export const GENERAL_STYLE = StyleSheet.create({
     communVIEW: {
         display: 'flex',
         flexDirection: 'column',
-        padding: SIZES.PADDING,
-        backgroundColor:'red'
+        padding: SIZES.PADDING
     }
 })
 
