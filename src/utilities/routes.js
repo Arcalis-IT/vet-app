@@ -27,6 +27,11 @@ import LOTTIES from './constants/lotties';
 import { DEFAULT_DESCRIPTIONS_DROP ,DEFAULT_ANIMALS_DROP, dummyCastrations, dummyChart } from "./configuration/database/dummyData";
 
 //------------------------------------------------
+// --- AGENDA THEME
+//------------------------------------------------
+import { agendaTHEME } from "./constants/agendaTheme";
+
+//------------------------------------------------
 // --- BAAS
 //------------------------------------------------
 import BAAS from "./configuration/firebase/BAAS";
@@ -41,6 +46,7 @@ export {
     IMAGES,
     LOTTIES,
     dummyChart,
+    agendaTHEME,
     IMAGE_STYLE,
     DYNAMIC_BAAS,
     STORAGE_BAAS,

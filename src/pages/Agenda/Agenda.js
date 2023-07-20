@@ -15,9 +15,14 @@ import {
     StyleSheet,
     TouchableOpacity,
 } from 'react-native';
-import { COLORS, GENERAL_STYLE, SIZES } from '../../utilities/routes';
+import { agendaTHEME, BAAS, COLORS, GENERAL_STYLE, SIZES } from '../../utilities/routes';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Header } from '../../components/routes';
+import LoadingFrame from '../../components/LoadingFrame/LoadingFrame';
 import { Agenda, LocaleConfig } from 'react-native-calendars';
+import { useEffect, useState } from 'react';
+import moment from "moment";
+import style from './style';
 
 /**************************************************************************************
 // @LuisStarlino |  18/07/2023  18"46
@@ -37,8 +42,86 @@ LocaleConfig.defaultLocale = 'pt';
 const AgendaScreen = ({ navigation, route }) => {
 
     //------------------------------------------------
+    // --- CONST 
+    //------------------------------------------------
+    const [events, setEvents] = useState({});
+    const [loading, setLoading] = useState(false);
+
+    //------------------------------------------------
+    // --- USE EFFECT'S
+    //------------------------------------------------
+    useEffect(() => {
+        setLoading(true);
+        getCardsAgenda();
+        setLoading(false);
+    }, [])
+
+    //------------------------------------------------
     // --- FUNCTION'S
     //------------------------------------------------
+    async function getCardsAgenda() {
+
+        // --- Get User
+        const userID = await AsyncStorage.getItem('@vetapp:user');
+
+        if (userID !== null) { // --- Receive user
+
+            let _json = JSON.parse(userID);
+
+            // --- GET APPOINTMENTS
+            await getAppointments(_json?.id);
+
+        }
+
+        // const data = '2023-07-21';
+        // const nameNew = 'Luis';
+        // const array = {
+        //     '2023-07-19': [{ name: 'Cycling' }, { name: 'Walking' }, { name: 'Running' }, { name: 'Running' }, { name: 'Running' }],
+        //     '2023-07-20': [{ name: 'Writing' }]
+        // };
+        // if (!array[data]) {
+        //     array[data] = [];
+        // }
+        // array[data].push({ name: nameNew });
+        // array[data].push({ name: "NovoEvent" });
+        // setEvents(array);
+    }
+
+    /**************************************************************************************
+    // @LuisStarlino |  19/07/2023  21"20
+    //  --- Nova função que monta a exibição das consultas para a agenda.
+    /***************************************************************************************/
+    const getAppointments = async (id) => {
+        try {
+            const array = {}; // --- Empyt
+            const value = await BAAS.getAppointments(id);
+
+            if (value != null && value.length > 0 && value[0] != undefined) {
+
+                // --- MONTANDO O JSON DOS APPOINTMENTS
+                value.map((i) => {
+
+                    var tempDate = moment(i?.date.toDate()).format('YYYY-MM-DD');
+                    var tempDesc = i?.description;
+                    var tempHour = i?.hour;
+                    var tempPetName = i?.animal_name;
+
+                    if (!array[tempDate]) {
+                        array[tempDate] = [];
+                    }
+
+
+                    array[tempDate].push({ name: tempPetName, desc: tempDesc, hour: tempHour, pet: tempPetName });
+                });
+
+                setEvents(array);
+            }
+        } catch (e) {
+            console.log("erro -->" + e);
+            alert(e);
+        }
+    }
+
     function gBack() {
         navigation.goBack();
     }
@@ -51,28 +134,18 @@ const AgendaScreen = ({ navigation, route }) => {
             <View style={{ height: SIZES.HEIGHT * 0.65 }}>
                 <Agenda
                     style={{ height: '100%' }}
-                    // selected="2022-12-01"
-                    selected={`${new Date().toDateString()}`}
-                    theme={{
-                        selectedDayBackgroundColor: COLORS.BLUE,
-                        agendaTodayColor: COLORS.BLUE,
-                        agendaKnobColor: COLORS.BLUE,
-                        todayTextColor: COLORS.BLUE,
-                        todayDotColor: COLORS.BLUE,
-                        dotColor: COLORS.BLUE
-                        // backgroundColor: '#ffffff',
-                        // calendarBackground: '#ffffff',
-                        // selectedDayTextColor: '#ffffff',
-                        // textDisabledColor: '#d9e'
-                    }}                
-
-                    items={{
-                        '2023-07-19': [{ name: 'Cycling' }, { name: 'Walking' }, { name: 'Running' }, { name: 'Running' }, { name: 'Running' }],
-                        '2023-07-20': [{ name: 'Writing' }]
-                    }}
+                    theme={{ ...agendaTHEME }}
+                    items={events} // --- Seting in a function
+                    //selected={`${new Date().toDateString()}`} // Today
+                    selected={`2023-05-10`} // JUST FOR TEST
                     renderItem={(item, isFirst) => (
-                        <TouchableOpacity style={styles.item}>
-                            <Text style={styles.itemText}>{item.name}</Text>
+                        <TouchableOpacity style={style.mainBoxView.main}>
+                            <View style={style.mainBoxView.line}>
+                                <Text style={style.mainBoxView.txt}>{`${item.desc} - ${item.hour}`}</Text>
+                            </View>
+                            <View style={style.mainBoxView.line}>
+                                <Text style={style.mainBoxView.txtName} >{`Pet: ${item.pet}`}</Text>
+                            </View>
                         </TouchableOpacity>
                     )}
 
@@ -94,6 +167,12 @@ const AgendaScreen = ({ navigation, route }) => {
 
     return (
         <View style={GENERAL_STYLE.communVIEW}>
+
+            {/* LOADING FRAME POP-UP */}
+            <LoadingFrame
+                visible={loading}
+                color={COLORS.LIGHT_BLUE}
+            />
 
             {/* HEADER */}
             <Header goBackFunc={gBack} />

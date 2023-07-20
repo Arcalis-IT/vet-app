@@ -12,7 +12,6 @@ import TabIcon from "./TabIcon/TabIcon";
 import ModalBox from "./ModalBox/ModalBox";
 import SplashScreen from "./SplashScreen/SplashScreen";
 
-
 export {
     Tabs,
     Header,
