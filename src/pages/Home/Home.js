@@ -183,7 +183,6 @@ const Home = ({ navigation, route }) => {
                 style={{ alignItems: 'center' }}
                 onBackdropPress={() => setShowModal(false)}
                 animationIn={"fadeIn"}
-                animationOut={"fadeOut"}
             >
                 <View style={modalBox.container}>
                     {/* TITLE */}

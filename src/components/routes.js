@@ -8,6 +8,7 @@
 //------------------------------------------------
 import Tabs from "./TabBar/TabBar";
 import Header from "./Header/Header";
+import Details from "./Details/Details";
 import TabIcon from "./TabIcon/TabIcon";
 import ModalBox from "./ModalBox/ModalBox";
 import SplashScreen from "./SplashScreen/SplashScreen";
@@ -16,6 +17,7 @@ export {
     Tabs,
     Header,
     TabIcon,
+    Details,
     ModalBox,
     SplashScreen,
 }

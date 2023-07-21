@@ -17,7 +17,7 @@ import {
 } from 'react-native';
 import { agendaTHEME, BAAS, COLORS, GENERAL_STYLE, SIZES } from '../../utilities/routes';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Header } from '../../components/routes';
+import { Header, Details } from '../../components/routes';
 import LoadingFrame from '../../components/LoadingFrame/LoadingFrame';
 import { Agenda, LocaleConfig } from 'react-native-calendars';
 import { useEffect, useState } from 'react';
@@ -46,6 +46,8 @@ const AgendaScreen = ({ navigation, route }) => {
     //------------------------------------------------
     const [events, setEvents] = useState({});
     const [loading, setLoading] = useState(false);
+    const [showDetails, setShowDetails] = useState(false);
+    const [selectedItem, setSelectedItem] = useState(null);
 
     //------------------------------------------------
     // --- USE EFFECT'S
@@ -72,19 +74,11 @@ const AgendaScreen = ({ navigation, route }) => {
             await getAppointments(_json?.id);
 
         }
+    }
 
-        // const data = '2023-07-21';
-        // const nameNew = 'Luis';
-        // const array = {
-        //     '2023-07-19': [{ name: 'Cycling' }, { name: 'Walking' }, { name: 'Running' }, { name: 'Running' }, { name: 'Running' }],
-        //     '2023-07-20': [{ name: 'Writing' }]
-        // };
-        // if (!array[data]) {
-        //     array[data] = [];
-        // }
-        // array[data].push({ name: nameNew });
-        // array[data].push({ name: "NovoEvent" });
-        // setEvents(array);
+    function openTheDetails(item) { 
+        setSelectedItem(item);
+        setShowDetails(true);
     }
 
     /**************************************************************************************
@@ -139,9 +133,9 @@ const AgendaScreen = ({ navigation, route }) => {
                     //selected={`${new Date().toDateString()}`} // Today
                     selected={`2023-05-10`} // JUST FOR TEST
                     renderItem={(item, isFirst) => (
-                        <TouchableOpacity style={style.mainBoxView.main}>
+                        <TouchableOpacity style={style.mainBoxView.main} onPress={(() => openTheDetails(item))}>
                             <View style={style.mainBoxView.line}>
-                                <Text style={style.mainBoxView.txt}>{`${item.desc} - ${item.hour}`}</Text>
+                                <Text style={style.mainBoxView.txt}>{`${item.hour} - ${item.desc}`}</Text>
                             </View>
                             <View style={style.mainBoxView.line}>
                                 <Text style={style.mainBoxView.txtName} >{`Pet: ${item.pet}`}</Text>
@@ -167,6 +161,9 @@ const AgendaScreen = ({ navigation, route }) => {
 
     return (
         <View style={GENERAL_STYLE.communVIEW}>
+
+            {/* DETAILS MODAL FRAME */}
+            <Details show={showDetails} item={selectedItem} />
 
             {/* LOADING FRAME POP-UP */}
             <LoadingFrame

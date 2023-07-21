@@ -12,6 +12,8 @@ import { COLORS, SIZES } from "../../utilities/routes";
 const mainBoxView = StyleSheet.create({
     main: {
         backgroundColor: COLORS.WHITE,
+        borderColor: COLORS.BLUE,
+        borderWidth: 1,
         flex: 1,
         display:'flex',
         borderRadius: 5,
