@@ -7,7 +7,7 @@
 // IMPORTS
 //------------------------------------------------
 import React from "react";
-import { Initial, Login, EditProfile, Reports } from './pages/routes'
+import { Initial, Login, EditProfile, Reports, Appointments } from './pages/routes'
 import 'react-native-gesture-handler';
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
@@ -26,6 +26,7 @@ const App = () => {
                 <Stack.Screen name="Tab" component={Tabs}/>
                 <Stack.Screen name="EditProfile" component={EditProfile}/>
                 <Stack.Screen name="Reports" component={Reports}/>
+                <Stack.Screen name="appointment" component={Appointments}/>
             </Stack.Navigator>
         </NavigationContainer>
     )

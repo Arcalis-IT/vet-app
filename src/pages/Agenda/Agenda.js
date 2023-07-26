@@ -15,9 +15,13 @@ import {
     StyleSheet,
     TouchableOpacity,
 } from 'react-native';
+import AlertMessage from '../../components/Modal/ModalText';
+import { PaperProvider } from 'react-native-paper';
 import { agendaTHEME, BAAS, COLORS, GENERAL_STYLE, SIZES } from '../../utilities/routes';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Header, Details } from '../../components/routes';
+import { Header } from '../../components/routes';
+import Modal from 'react-native-modal';
+import DetailsAp from '../../components/Details/Details';
 import LoadingFrame from '../../components/LoadingFrame/LoadingFrame';
 import { Agenda, LocaleConfig } from 'react-native-calendars';
 import { useEffect, useState } from 'react';
@@ -49,6 +53,9 @@ const AgendaScreen = ({ navigation, route }) => {
     const [showDetails, setShowDetails] = useState(false);
     const [selectedItem, setSelectedItem] = useState(null);
 
+
+    const [modalAppt, setModalAppt] = useState({ visible: false, item: null, doneAction: null, cancelAction: null, outfunction: null });
+
     //------------------------------------------------
     // --- USE EFFECT'S
     //------------------------------------------------
@@ -76,9 +83,18 @@ const AgendaScreen = ({ navigation, route }) => {
         }
     }
 
-    function openTheDetails(item) { 
-        setSelectedItem(item);
-        setShowDetails(true);
+    function openTheDetails() {
+
+        setModalAppt({
+            visible: true,
+            cancelAction: null,
+            doneAction: null,
+            outfunction: (() => { setModalAppt({ visible: false }) })
+        })
+        // setLoading(true);
+        // setSelectedItem(item);
+        // setShowDetails(true);
+        // setLoading(false);
     }
 
     /**************************************************************************************
@@ -105,7 +121,7 @@ const AgendaScreen = ({ navigation, route }) => {
                     }
 
 
-                    array[tempDate].push({ name: tempPetName, desc: tempDesc, hour: tempHour, pet: tempPetName });
+                    array[tempDate].push({ name: tempPetName, desc: tempDesc, hour: tempHour, pet: tempPetName, fullData:i  });
                 });
 
                 setEvents(array);
@@ -133,7 +149,16 @@ const AgendaScreen = ({ navigation, route }) => {
                     //selected={`${new Date().toDateString()}`} // Today
                     selected={`2023-05-10`} // JUST FOR TEST
                     renderItem={(item, isFirst) => (
-                        <TouchableOpacity style={style.mainBoxView.main} onPress={(() => openTheDetails(item))}>
+
+                        <TouchableOpacity style={style.mainBoxView.main}
+                            onPress={(() => {
+                                console.log(item);
+                                navigation.navigate({name: 'appointment', params: {props: item} });
+                                // navigation.reset('Tab', {
+                                //     screen: 'Home',
+                                //     params: { userId: user?.user.uid },
+                                // })
+                            })}>
                             <View style={style.mainBoxView.line}>
                                 <Text style={style.mainBoxView.txt}>{`${item.hour} - ${item.desc}`}</Text>
                             </View>
@@ -162,8 +187,15 @@ const AgendaScreen = ({ navigation, route }) => {
     return (
         <View style={GENERAL_STYLE.communVIEW}>
 
+
+            <Modal isVisible={showDetails}>
+                <View>
+                    <Text style={{ color: 'red' }}>OI</Text>
+                </View>
+            </Modal>
+
             {/* DETAILS MODAL FRAME */}
-            <Details show={showDetails} item={selectedItem} />
+            <DetailsAp props={modalAppt} />
 
             {/* LOADING FRAME POP-UP */}
             <LoadingFrame

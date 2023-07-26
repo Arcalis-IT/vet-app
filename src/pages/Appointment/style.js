@@ -25,8 +25,7 @@ const mainContainer = StyleSheet.create({
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-between',
-        width: SIZES.WIDTH * .90,
-        alignItems: 'center'
+        alignItems: 'center',
     },
     btn: {
         padding: SIZES.PADDING * 0.7,
@@ -41,7 +40,7 @@ const mainContainer = StyleSheet.create({
     nameOwner: {
         fontSize: SIZES.H4,
         color: COLORS.GRAY,
-        fontWeight: "600"
+        fontWeight: "400"
     },
     underHeader: {
         display: 'flex',
@@ -67,11 +66,29 @@ const mainContainer = StyleSheet.create({
 
 const container = StyleSheet.create({
     fullArea: {
-        backgroundColor: 'red'
+        width: SIZES.WIDTH,
+        height: SIZES.HEIGHT
+    }
+})
+
+const infos = StyleSheet.create({
+    row: {
+        backgroundColor: 'yellow',
+        padding: SIZES.PADDING,
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'space-around'
+    },
+    detailRow: {
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems:'center',
+        gap: 5
     }
 })
 
 export default {
     mainContainer,
-    container
+    container,
+    infos
 }
