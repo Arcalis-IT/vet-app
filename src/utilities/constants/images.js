@@ -9,6 +9,7 @@
 const _myself = require("../../assets/imgs/dummy/profile.jpg");
 const loadingIMG = require("../../assets/imgs/dummy/loading_user.png");
 const home_bg = require("../../assets/imgs/background/background1.png");
+const staticMAP = require("../../assets/imgs/dummy/staticMap.jpg");
 
 // --- Icons
 const iconDog = require("../../assets/imgs/icons/dog.png");
@@ -24,6 +25,7 @@ export default  {
     home_bg,
     initial_bg,
     loadingIMG,
+    staticMAP,
 
     iconDog,
     iconCat,

@@ -13,9 +13,10 @@ import {
 import Modal from 'react-native-modal';
 import { main } from "./style";
 import Icon from 'react-native-vector-icons/Feather';
+import Icon2 from 'react-native-vector-icons/Ionicons';
 import { COLORS, GENERAL_STYLE } from "../../utilities/routes";
 
-export default function AlertMessage({ message, action, visible, outClick, type, btnTxt1 = null }) {
+export default function AlertMessage({ message, action, visible, outClick, type, btnTxt1 = null, activeIcon2 = false }) {
 
 
     return (
@@ -30,7 +31,10 @@ export default function AlertMessage({ message, action, visible, outClick, type,
                  ?
                 <Icon name={"alert-triangle"} color={COLORS.WHITE} size={150} />
                 : 
-                <Icon name={type} color={COLORS.WHITE} size={150} />
+                !activeIcon2 ? // --- Aqui eu ativo a lib2 dos ícons, exemplo na tela "Appointment.js"
+                    <Icon name={type} color={COLORS.WHITE} size={150} />
+                    :
+                    <Icon2 name={'checkmark-done-circle-outline'} color={COLORS.WHITE} size={150} />
             }
 
             {/* FIXED TITLE */}

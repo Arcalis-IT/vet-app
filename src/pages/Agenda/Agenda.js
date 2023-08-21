@@ -17,7 +17,7 @@ import {
 } from 'react-native';
 import AlertMessage from '../../components/Modal/ModalText';
 import { PaperProvider } from 'react-native-paper';
-import { agendaTHEME, BAAS, COLORS, GENERAL_STYLE, SIZES } from '../../utilities/routes';
+import { agendaTHEME, BAAS, COLORS, DYNAMIC_BAAS, GENERAL_STYLE, SIZES } from '../../utilities/routes';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Header } from '../../components/routes';
 import Modal from 'react-native-modal';
@@ -52,18 +52,18 @@ const AgendaScreen = ({ navigation, route }) => {
     const [loading, setLoading] = useState(false);
     const [showDetails, setShowDetails] = useState(false);
     const [selectedItem, setSelectedItem] = useState(null);
-
+    const [showAgenda, setShowAgenda] = useState(false);
 
     const [modalAppt, setModalAppt] = useState({ visible: false, item: null, doneAction: null, cancelAction: null, outfunction: null });
 
     //------------------------------------------------
     // --- USE EFFECT'S
     //------------------------------------------------
-    useEffect(() => {
+    useEffect(()=>{
+        setShowAgenda(false)
         setLoading(true);
         getCardsAgenda();
-        setLoading(false);
-    }, [])
+    },[route])
 
     //------------------------------------------------
     // --- FUNCTION'S
@@ -91,10 +91,7 @@ const AgendaScreen = ({ navigation, route }) => {
             doneAction: null,
             outfunction: (() => { setModalAppt({ visible: false }) })
         })
-        // setLoading(true);
-        // setSelectedItem(item);
-        // setShowDetails(true);
-        // setLoading(false);
+        
     }
 
     /**************************************************************************************
@@ -105,6 +102,7 @@ const AgendaScreen = ({ navigation, route }) => {
         try {
             const array = {}; // --- Empyt
             const value = await BAAS.getAppointments(id);
+            //const value2 = await DYNAMIC_BAAS.getAppointmentsDinamic(id);
 
             if (value != null && value.length > 0 && value[0] != undefined) {
 
@@ -115,16 +113,23 @@ const AgendaScreen = ({ navigation, route }) => {
                     var tempDesc = i?.description;
                     var tempHour = i?.hour;
                     var tempPetName = i?.animal_name;
+                    var showTag = !i?.active;
 
                     if (!array[tempDate]) {
                         array[tempDate] = [];
                     }
 
-
-                    array[tempDate].push({ name: tempPetName, desc: tempDesc, hour: tempHour, pet: tempPetName, fullData:i  });
+                    array[tempDate].push({ name: tempPetName, desc: tempDesc, hour: tempHour, pet: tempPetName, fullData: i, showTag });
                 });
-
+                
                 setEvents(array);
+                
+                const timeout = setTimeout(() => {
+                    setShowAgenda(true);
+                    setLoading(false);
+                    clearTimeout(timeout);
+                }, 3000);
+                
             }
         } catch (e) {
             console.log("erro -->" + e);
@@ -149,17 +154,18 @@ const AgendaScreen = ({ navigation, route }) => {
                     //selected={`${new Date().toDateString()}`} // Today
                     selected={`2023-05-10`} // JUST FOR TEST
                     renderItem={(item, isFirst) => (
-
                         <TouchableOpacity style={style.mainBoxView.main}
                             onPress={(() => {
-                                console.log(item);
-                                navigation.navigate({name: 'appointment', params: {props: item} });
-                                // navigation.reset('Tab', {
-                                //     screen: 'Home',
-                                //     params: { userId: user?.user.uid },
-                                // })
+                                // console.log(item);
+                                navigation.navigate({ name: 'appointment', params: { props: item } });
                             })}>
+                            {item.showTag == true  && // -- TAG CANCEL
+                                <View style={style.cancelBox.main}>
+                                    <Text style={style.cancelBox.txt}>Cancelado</Text>
+                                </View>
+                            }
                             <View style={style.mainBoxView.line}>
+                                
                                 <Text style={style.mainBoxView.txt}>{`${item.hour} - ${item.desc}`}</Text>
                             </View>
                             <View style={style.mainBoxView.line}>
@@ -212,7 +218,10 @@ const AgendaScreen = ({ navigation, route }) => {
             </View>
 
             {/* CALENDAR / AGENDA */}
-            {renderAgenda()}
+            {showAgenda == true  && <>
+                {renderAgenda()}
+            </>}
+            
         </View>
     )
 }

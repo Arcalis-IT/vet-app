@@ -11,6 +11,7 @@ import { COLORS, SIZES } from "../../utilities/routes";
 
 const mainBoxView = StyleSheet.create({
     main: {
+        position: 'relative',
         backgroundColor: COLORS.WHITE,
         borderColor: COLORS.BLUE,
         borderWidth: 1,
@@ -37,6 +38,24 @@ const mainBoxView = StyleSheet.create({
     }
 })
 
+const cancelBox = StyleSheet.create({
+    main: {
+        backgroundColor: 'red',
+        position: 'absolute',
+        right: 0,
+        padding: 10,
+        borderBottomLeftRadius: SIZES.RADIUS,
+        borderTopWidth:1,
+        borderColor: COLORS.WHITE,
+        borderRightWidth: 1
+    },
+    txt: {
+        fontWeight: "700",
+        color: COLORS.WHITE
+    }
+})
+
 export default {
-    mainBoxView
+    mainBoxView,
+    cancelBox
 }

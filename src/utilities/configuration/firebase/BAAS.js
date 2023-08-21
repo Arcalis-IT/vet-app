@@ -219,8 +219,13 @@ const addNewAppointment = async (form, userID) => {
         firebase().collection('appointments').
             doc(`${countCollection + 1}_${userID}`).
             set({
+                id: `${countCollection + 1}_${userID}`,
+                active: true,
+                updated: false,
                 userID: userID,
                 insertAT: formattedDate,
+                cancelAT: formattedDate,
+                updateAT: formattedDate,
                 description: form.description.value,
                 date: form.datetime.value,
                 hour: form.hour.value,
@@ -269,7 +274,7 @@ const addNewGeneralReport = async (id, field) => {
 
                 if (!findAtt) temp_reports[field] = 1;
                 return temp_reports;
-        });
+            });
 
 
         await firebase()
@@ -358,11 +363,90 @@ const getGeneralReports = async (id) => {
     }
 }
 
+/**************************************************************************************
+// @LuisStarlino |  31/07/2023  19"13
+// --- Busca um compromisso e troca o status ativo dele(cancela ele).
+/***************************************************************************************/
+const cancelAppointment = async (idAppointment) => {
+    try {
+
+        const _tempAppointment = await firebase().
+            collection('appointments').
+            doc(idAppointment)
+            .get().then((querySnapshot) => {
+
+                var tempData = querySnapshot.data() // --- FIND
+
+                tempData.active = false; // --- CANCEL TRIGGER
+                tempData.cancelAT = formattedDate; // --- CANCEL DATETIME
+
+
+                return tempData; // --- RETURN TO SAVE
+
+            }
+        );
+
+        await firebase()
+            .collection('appointments')
+            .doc(idAppointment)
+            .set(_tempAppointment);
+
+        return true;
+
+    }
+    catch (e) {
+        console.log("Erro ao atualizar suas informações");
+        console.log(e);
+        throw "ERR IEG004 - Erro ao atualizar suas informações.";
+    }
+}
+
+/**************************************************************************************
+// @LuisStarlino |  21/08/2023  20"22
+// --- Busca um compromisso e atualiza as informações dele
+/***************************************************************************************/
+const updateAppointment = async ({idAppointment, dateNew, hourNew}) => {
+    try {
+
+        const _tempAppointment = await firebase().
+            collection('appointments').
+            doc(idAppointment)
+            .get().then((querySnapshot) => {
+
+                var tempData = querySnapshot.data() // --- FIND
+
+                tempData.updated = true; // --- CANCEL TRIGGER
+                tempData.updateAT = formattedDate; // --- UPDATE DATETIME
+                tempData.hour = hourNew;
+                tempData.date = dateNew
+                
+                return tempData; // --- RETURN TO SAVE
+
+            }
+        );
+
+        await firebase()
+            .collection('appointments')
+            .doc(idAppointment)
+            .set(_tempAppointment);
+
+        return true;
+
+    }
+    catch (e) {
+        console.log("Erro ao atualizar suas informações");
+        console.log(e);
+        throw "ERR IEG005 - Erro ao atualizar suas informações.";
+    }
+}
+
 export default {
     getUserData,
     authentication,
     getAppointments,
+    updateAppointment,
     getGeneralReports,
+    cancelAppointment,
     addNewAppointment,
     addNewGeneralReport,
     updateUserInformation,
