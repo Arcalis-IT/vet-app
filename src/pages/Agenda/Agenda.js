@@ -15,18 +15,26 @@ import {
     StyleSheet,
     TouchableOpacity,
 } from 'react-native';
-import AlertMessage from '../../components/Modal/ModalText';
-import { PaperProvider } from 'react-native-paper';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import Icon2 from 'react-native-vector-icons/FontAwesome';
+import MenuPopUP from '../../components/ModalMenu/ModalText';
 import { agendaTHEME, BAAS, COLORS, DYNAMIC_BAAS, GENERAL_STYLE, SIZES } from '../../utilities/routes';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Header } from '../../components/routes';
-import Modal from 'react-native-modal';
 import DetailsAp from '../../components/Details/Details';
 import LoadingFrame from '../../components/LoadingFrame/LoadingFrame';
 import { Agenda, LocaleConfig } from 'react-native-calendars';
 import { useEffect, useState } from 'react';
 import moment from "moment";
 import style from './style';
+import { MenuProvider } from 'react-native-popup-menu';
+// somewhere in your app
+import {
+    Menu,
+    MenuOptions,
+    MenuOption,
+    MenuTrigger,
+} from 'react-native-popup-menu';
 
 /**************************************************************************************
 // @LuisStarlino |  18/07/2023  18"46
@@ -50,20 +58,20 @@ const AgendaScreen = ({ navigation, route }) => {
     //------------------------------------------------
     const [events, setEvents] = useState({});
     const [loading, setLoading] = useState(false);
-    const [showDetails, setShowDetails] = useState(false);
-    const [selectedItem, setSelectedItem] = useState(null);
     const [showAgenda, setShowAgenda] = useState(false);
-
+    const [dateInitAgenda, setDateInitAgenda] = useState();
+    const [showReportsMenu, setShowReportsMenu] = useState(false);
+    const outReportMenu = () => { setShowReportsMenu(false); };
     const [modalAppt, setModalAppt] = useState({ visible: false, item: null, doneAction: null, cancelAction: null, outfunction: null });
 
     //------------------------------------------------
     // --- USE EFFECT'S
     //------------------------------------------------
-    useEffect(()=>{
+    useEffect(() => {
         setShowAgenda(false)
         setLoading(true);
         getCardsAgenda();
-    },[route])
+    }, [route])
 
     //------------------------------------------------
     // --- FUNCTION'S
@@ -91,7 +99,7 @@ const AgendaScreen = ({ navigation, route }) => {
             doneAction: null,
             outfunction: (() => { setModalAppt({ visible: false }) })
         })
-        
+
     }
 
     /**************************************************************************************
@@ -102,7 +110,7 @@ const AgendaScreen = ({ navigation, route }) => {
         try {
             const array = {}; // --- Empyt
             const value = await BAAS.getAppointments(id);
-            //const value2 = await DYNAMIC_BAAS.getAppointmentsDinamic(id);
+            const getDateAgenda = await DYNAMIC_BAAS.getAppointmentsDinamic(id);
 
             if (value != null && value.length > 0 && value[0] != undefined) {
 
@@ -121,16 +129,25 @@ const AgendaScreen = ({ navigation, route }) => {
 
                     array[tempDate].push({ name: tempPetName, desc: tempDesc, hour: tempHour, pet: tempPetName, fullData: i, showTag });
                 });
-                
+
                 setEvents(array);
-                
+                // --- Show Agenda
                 const timeout = setTimeout(() => {
                     setShowAgenda(true);
                     setLoading(false);
                     clearTimeout(timeout);
                 }, 3000);
-                
+
             }
+
+            // --- SetInitDate
+            if (getDateAgenda != null && getDateAgenda.length > 0 && getDateAgenda[0] != undefined) {
+                var initDateFormat = moment(getDateAgenda[0].date.toDate()).format('YYYY-MM-DD');
+                setDateInitAgenda(initDateFormat);
+            }
+
+
+
         } catch (e) {
             console.log("erro -->" + e);
             alert(e);
@@ -141,9 +158,69 @@ const AgendaScreen = ({ navigation, route }) => {
         navigation.goBack();
     }
 
+    function openModal() {
+        setShowReportsMenu(true)
+    }
+
     //------------------------------------------------
     // --- RENDER'S
     //------------------------------------------------
+    function renderHeader() {
+        return (
+            <View style={style.headerStyle.containerHeader}>
+
+                {/* GO BACK */}
+                <TouchableOpacity style={style.headerStyle.btnBack} onPress={() => { gBack() }}>
+                    <Icon name={"arrow-left"} color={COLORS.BLUE} size={30} />
+                </TouchableOpacity>
+
+                {/* MENU */}
+                <Menu>
+                    <MenuTrigger
+                        style={style.headerStyle.btnBack}>
+                        <Icon name={"menu"} color={COLORS.BLUE} size={30} />
+                    </MenuTrigger>
+
+                    <MenuOptions customStyles={{
+                        optionsContainer: {
+                            borderRadius: 5,
+                            height: "auto",
+                            shadowColor: COLORS.BLUE,
+                            marginTop: SIZES.WIDTH * 0.08,
+                        },
+                    }}>
+                        <MenuOption disabled={true} text='Exportar Relatórios PDF' />
+                        <MenuOption style={style.headerStyle.popMenu}>
+                            <Icon2 name="file-pdf-o" size={20} color={COLORS.BLUE} />
+                            <Text style={{ color: COLORS.BLACK }}>Relatório semana</Text>
+                        </MenuOption>
+                        <MenuOption style={style.headerStyle.popMenu}>
+                            <Icon2 name="file-pdf-o" size={20} color={COLORS.BLUE} />
+                            <Text style={{ color: COLORS.BLACK }}>Relatório mês</Text>
+                        </MenuOption>
+                        <MenuOption style={style.headerStyle.popMenu}>
+                            <Icon2 name="file-pdf-o" size={20} color={COLORS.BLUE} />
+                            <Text style={{ color: COLORS.BLACK }}>Relatório ano</Text>
+                        </MenuOption>
+                        <MenuOption disabled={true} text='Exportar Relatórios Excel' />
+                        <MenuOption style={style.headerStyle.popMenu}>
+                            <Icon name="microsoft-excel" size={20} color={COLORS.BLUE} />
+                            <Text style={{ color: COLORS.BLACK }}>Relatório semana</Text>
+                        </MenuOption>
+                        <MenuOption style={style.headerStyle.popMenu}>
+                            <Icon name="microsoft-excel" size={20} color={COLORS.BLUE} />
+                            <Text style={{ color: COLORS.BLACK }}>Relatório mês</Text>
+                        </MenuOption>
+                        <MenuOption style={style.headerStyle.popMenu}>
+                            <Icon name="microsoft-excel" size={20} color={COLORS.BLUE} />
+                            <Text style={{ color: COLORS.BLACK }}>Relatório ano</Text>
+                        </MenuOption>
+
+                    </MenuOptions>
+                </Menu>
+            </View>
+        )
+    }
     function renderAgenda() {
         return (
             <View style={{ height: SIZES.HEIGHT * 0.65 }}>
@@ -151,21 +228,20 @@ const AgendaScreen = ({ navigation, route }) => {
                     style={{ height: '100%' }}
                     theme={{ ...agendaTHEME }}
                     items={events} // --- Seting in a function
-                    //selected={`${new Date().toDateString()}`} // Today
-                    selected={`2023-05-10`} // JUST FOR TEST
+                    selected={dateInitAgenda}
                     renderItem={(item, isFirst) => (
                         <TouchableOpacity style={style.mainBoxView.main}
                             onPress={(() => {
                                 // console.log(item);
                                 navigation.navigate({ name: 'appointment', params: { props: item } });
                             })}>
-                            {item.showTag == true  && // -- TAG CANCEL
+                            {item.showTag == true && // -- TAG CANCEL
                                 <View style={style.cancelBox.main}>
                                     <Text style={style.cancelBox.txt}>Cancelado</Text>
                                 </View>
                             }
                             <View style={style.mainBoxView.line}>
-                                
+
                                 <Text style={style.mainBoxView.txt}>{`${item.hour} - ${item.desc}`}</Text>
                             </View>
                             <View style={style.mainBoxView.line}>
@@ -191,15 +267,13 @@ const AgendaScreen = ({ navigation, route }) => {
     }
 
     return (
-        <View style={GENERAL_STYLE.communVIEW}>
+        <MenuProvider style={GENERAL_STYLE.communVIEW}>
 
-
-            <Modal isVisible={showDetails}>
-                <View>
-                    <Text style={{ color: 'red' }}>OI</Text>
-                </View>
-            </Modal>
-
+            {/* MODAL POP-UP */}
+            <MenuPopUP
+                visible={showReportsMenu}
+                outClick={outReportMenu}
+            />
             {/* DETAILS MODAL FRAME */}
             <DetailsAp props={modalAppt} />
 
@@ -210,7 +284,8 @@ const AgendaScreen = ({ navigation, route }) => {
             />
 
             {/* HEADER */}
-            <Header goBackFunc={gBack} />
+            {renderHeader()}
+            {/* <Header goBackFunc={gBack} openMenu={openModal} /> */}
 
             {/* TITLE */}
             <View style={{ marginTop: 30, marginBottom: 30 }}>
@@ -218,11 +293,11 @@ const AgendaScreen = ({ navigation, route }) => {
             </View>
 
             {/* CALENDAR / AGENDA */}
-            {showAgenda == true  && <>
+            {showAgenda == true && <>
                 {renderAgenda()}
             </>}
-            
-        </View>
+
+        </MenuProvider>
     )
 }
 

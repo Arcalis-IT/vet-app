@@ -38,6 +38,33 @@ const mainBoxView = StyleSheet.create({
     }
 })
 
+const headerStyle = StyleSheet.create({
+    containerHeader: {
+        //backgroundColor: 'blue',
+        width: "100%",
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'space-between'
+    },
+    btnBack: {
+        display: 'flex',
+        flexDirection: "row",
+        alignItems: 'center',
+        gap: 5,
+        //backgroundColor: COLORS.BLUE,
+        padding: SIZES.PADDING / 3,
+        borderRadius: SIZES.RADIUS  / 2,
+        borderColor: COLORS.BLUE,
+        borderWidth: .8,
+    },
+    popMenu: {
+        display: 'flex',
+        flexDirection: 'row',
+        gap: SIZES.GAP * .3,
+        alignItems: 'center',
+    }
+})
+
 const cancelBox = StyleSheet.create({
     main: {
         backgroundColor: 'red',
@@ -57,5 +84,6 @@ const cancelBox = StyleSheet.create({
 
 export default {
     mainBoxView,
+    headerStyle,
     cancelBox
 }

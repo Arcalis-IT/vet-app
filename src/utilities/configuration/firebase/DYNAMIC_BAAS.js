@@ -19,11 +19,11 @@ const getAnimalsDrop = async ({ id }) => {
 
     var _drop = await firebase().collection('dropboxAnimals').doc(id).get().then((querySnapshot) => {
 
-        if(querySnapshot['_data']) {
+        if (querySnapshot['_data']) {
             return querySnapshot['_data'];
         }
         return null
-        
+
     });
 
     return _drop;
@@ -38,11 +38,11 @@ const getDescriptionsDrop = async ({ id }) => {
     var _drop = await firebase().collection('dropboxDescriptions').doc(id).get().then((querySnapshot) => {
         // console.log("Dentro do BAASS")
         // console.log(querySnapshot);
-        if(querySnapshot['_data']) {
+        if (querySnapshot['_data']) {
             return querySnapshot['_data'];
         }
         return null
-        
+
     });
 
     return _drop;
@@ -61,7 +61,7 @@ const getAppointmentsDinamic = async (id) => {
             collection('appointments')
             .where('userID', '==', id)
             .orderBy("date", "desc")
-            .limit(10)
+            .limit(1)
             .get().then((querySnapshot) => {
 
                 var temp_appointments = [];
@@ -71,9 +71,6 @@ const getAppointmentsDinamic = async (id) => {
 
                 return temp_appointments;
             });
-
-        console.log("Encontrou esses");
-        console.log(_appointments);
         return _appointments;
     }
     catch (e) {
@@ -82,10 +79,41 @@ const getAppointmentsDinamic = async (id) => {
         throw "ERR IEG003 - Erro ao recuperar suas informações.";
     }
 }
+/**************************************************************************************
+// @LuisStarlino |  30/08/2023 | 16:30
+//  --- Pegando os ultimos Appointments de acordo com o limit escolhido
+/***************************************************************************************/
+const getAppointmentsDinamicWithLimit = async (id, limit) => {
+    try {
+        //------------------------------------------------
+        // GET DOCS
+        //------------------------------------------------
+        const _appointments = await firebase().
+            collection('appointments')
+            .where('userID', '==', id)
+            .where('active', "==", true)
+            .orderBy("date", "desc")
+            .limit(limit)
+            .get().then((querySnapshot) => {
 
-
+                var temp_appointments = [];
+                querySnapshot.forEach(documentSnapshot => {
+                    temp_appointments.push(documentSnapshot.data());
+                });
+                
+                return temp_appointments;
+            });
+        return _appointments;
+    }
+    catch (e) {
+        console.log("Errou ao recuperar suas informações");
+        console.log(e);
+        throw "ERR IEG003 - Erro ao recuperar suas informações.";
+    }
+}
 export default {
     getAnimalsDrop,
     getDescriptionsDrop,
-    getAppointmentsDinamic
+    getAppointmentsDinamic,
+    getAppointmentsDinamicWithLimit
 }

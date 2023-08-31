@@ -17,6 +17,7 @@ import {
 import {
     GENERAL_STYLE,
     STORAGE_BAAS,
+    DYNAMIC_BAAS,
     IMAGE_STYLE,
     dummyChart,
     COLORS,
@@ -139,7 +140,8 @@ const Home = ({ navigation, route }) => {
     /***************************************************************************************/
     const getAppointments = async (id) => {
         try {
-            const value = await BAAS.getAppointments(id);
+            //const value = await BAAS.getAppointments(id);
+            const value = await DYNAMIC_BAAS.getAppointmentsDinamicWithLimit(id, 7);
             if (value != null && value.length > 0 && value[0] != undefined) {
                 setAppointments(value);
             }
@@ -357,7 +359,7 @@ const Home = ({ navigation, route }) => {
             <View style={{ marginTop: SIZES.MARGIN }}>
 
                 <>
-                    <Text style={GENERAL_STYLE.title}>Últimos 7 Dias</Text>
+                    <Text style={GENERAL_STYLE.title}>Gráficos de Atendimentos</Text>
 
                     {/* CHART BAR */}
                     <View style={chartBox.container}>

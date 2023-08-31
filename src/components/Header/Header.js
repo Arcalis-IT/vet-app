@@ -17,8 +17,7 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { COLORS } from "../../utilities/routes";
-
-const Header = ({ goBackFunc }) => {
+const Header = ({ goBackFunc, openMenu }) => {
     return (
         <View style={style.mainStyle.containerHeader}>
 
@@ -28,7 +27,7 @@ const Header = ({ goBackFunc }) => {
             </TouchableOpacity>
 
             {/* MENU */}
-            <TouchableOpacity style={style.mainStyle.btnBack} onPress={() => { console.log("Abrir Menu") }}>
+            <TouchableOpacity style={style.mainStyle.btnBack} onPress={() => { openMenu() }}>
                 <Icon name={"menu"} color={COLORS.BLUE} size={30} />
             </TouchableOpacity>
         </View>
