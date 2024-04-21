@@ -100,8 +100,8 @@ android {
         applicationId "com.vetapp"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 4
-        versionName "0.5"
+        versionCode 5
+        versionName "0.6"
     }
 
     splits {
@@ -167,6 +167,7 @@ dependencies {
     } else {
         implementation jscFlavor
     }
+    
 }
 
 apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)
